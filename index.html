@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agic - Unblocked Games</title>
+  <link rel="icon" href="Images/AgicLogoNoBg.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-tertiary: #262626;
+      --bg-card: rgba(30, 30, 30, 0.7);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --accent: #9333ea;
+      --accent-hover: #a855f7;
+      --accent-light: #e9d5ff;
+      --border: rgba(255, 255, 255, 0.1);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f4f4f5;
+      --bg-tertiary: #e4e4e7;
+      --bg-card: rgba(255, 255, 255, 0.8);
+      --text-primary: #18181b;
+      --text-secondary: #52525b;
+      --text-tertiary: #71717a;
+      --accent: #9333ea;
+      --accent-hover: #7e22ce;
+      --accent-light: #f3e8ff;
+      --border: rgba(0, 0, 0, 0.1);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: var(--transition);
+    }
+
+    /* Intro Screen */
+    #intro-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      overflow: hidden;
+      transition: opacity 1s ease-out;
+    }
+
+    #intro-screen.fade-out {
+      opacity: 0;
+    }
+
+    .intro-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .dobberrated-container {
+      position: relative;
+      margin-bottom: 80px;
+      overflow: hidden;
+    }
+
+    .dobberrated {
+      font-size: 80px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      position: relative;
+      color: #fff;
+      text-shadow: 
+        0 0 10px #ff00ff,
+        0 0 20px #ff00ff,
+        0 0 30px #ff00ff,
+        0 0 40px #ff00ff;
+      animation: glitch 2s infinite;
+    }
+
+    .dobberrated::before,
+    .dobberrated::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .dobberrated::before {
+      animation: glitch-1 0.5s infinite;
+      color: #00ffff;
+      z-index: -1;
+      clip-path: inset(0 0 0 0);
+    }
+
+    .dobberrated::after {
+      animation: glitch-2 0.5s infinite;
+      color: #ff00ff;
+      z-index: -2;
+      clip-path: inset(0 0 0 0);
+    }
+
+    .dobberrated-scanner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #00ffff, transparent);
+      animation: scanner 3s linear infinite;
+    }
+
+    .dobberrated-slice {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      animation: slice 4s infinite;
+    }
+
+    .fluxis-container {
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 2s forwards;
+      animation-delay: 2.5s;
+      margin-bottom: 60px;
+    }
+
+    .fluxis {
+      max-width: 450px;
+      height: auto;
+      filter: drop-shadow(0 0 30px rgba(147, 51, 234, 0.8));
+    }
+
+    .fluxis-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, transparent 70%);
+      animation: pulse 2s infinite;
+    }
+
+    .intro-presents {
+      font-size: 24px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+      animation-delay: 4s;
+      font-weight: 300;
+      text-align: center;
+    }
+
+    @keyframes glitch {
+      0%, 100% {
+        text-shadow: 
+          0 0 10px #ff00ff,
+          0 0 20px #ff00ff,
+          0 0 30px #ff00ff,
+          0 0 40px #ff00ff;
+      }
+      25% {
+        text-shadow: 
+          -2px 0 #00ffff,
+          2px 0 #ff00ff,
+          0 0 10px #00ffff,
+          0 0 20px #00ffff;
+      }
+      50% {
+        text-shadow: 
+          2px 0 #ff00ff,
+          -2px 0 #00ffff,
+          0 0 15px #ff00ff,
+          0 0 25px #ff00ff;
+      }
+      75% {
+        text-shadow: 
+          0 0 5px #fff,
+          0 0 10px #fff,
+          0 0 15px #fff,
+          0 0 20px #fff;
+      }
+    }
+
+    @keyframes glitch-1 {
+      0%, 100% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+      20% {
+        transform: translate(-2px, 2px);
+        clip-path: inset(20% 0 30% 0);
+      }
+      40% {
+        transform: translate(2px, -2px);
+        clip-path: inset(50% 0 20% 0);
+      }
+      60% {
+        transform: translate(-1px, 1px);
+        clip-path: inset(10% 0 60% 0);
+      }
+      80% {
+        transform: translate(1px, -1px);
+        clip-path: inset(70% 0 10% 0);
+      }
+    }
+
+    @keyframes glitch-2 {
+      0%, 100% {
+        transform: translate(0);
+        clip-path: inset(0 0 0 0);
+      }
+      20% {
+        transform: translate(2px, -1px);
+        clip-path: inset(60% 0 10% 0);
+      }
+      40% {
+        transform: translate(-2px, 1px);
+        clip-path: inset(10% 0 70% 0);
+      }
+      60% {
+        transform: translate(1px, 2px);
+        clip-path: inset(40% 0 30% 0);
+      }
+      80% {
+        transform: translate(-1px, -2px);
+        clip-path: inset(25% 0 50% 0);
+      }
+    }
+
+    @keyframes scanner {
+      0% {
+        top: 0;
+      }
+      100% {
+        top: 100%;
+      }
+    }
+
+    @keyframes slice {
+      0%, 100% {
+        transform: translateY(-100%);
+      }
+      50% {
+        transform: translateY(100%);
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    /* Loading Screen */
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-primary);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    #loading-screen.fade-in {
+      opacity: 1;
+    }
+
+    .loading-logo {
+      width: 100px;
+      margin-bottom: 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--bg-tertiary);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-message {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .loading-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+      width: 0%;
+      animation: loadAnim 2s linear forwards;
+    }
+
+    @keyframes loadAnim {
+      to { width: 100%; }
+    }
+
+    #main-content {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Panic Button */
+    .panic-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(220, 38, 38, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .panic-button:hover {
+      background: rgba(220, 38, 38, 1);
+      transform: scale(1.1);
+    }
+
+    .panic-button.active {
+      background: rgba(34, 197, 94, 0.8);
+    }
+
+    .panic-button.active:hover {
+      background: rgba(34, 197, 94, 1);
+    }
+
+    /* Header */
+    header {
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px);
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    [data-theme="light"] header {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    header img.logo {
+      height: 30px;
+      transition: var(--transition);
+    }
+
+    header img.logo:hover {
+      transform: scale(1.05);
+    }
+
+    .search-container {
+      flex: 1;
+      margin: 0 15px;
+      position: relative;
+      max-width: 300px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 8px 12px 8px 35px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      outline: none;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .search-container input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+    }
+
+    .search-container input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .nav-buttons button {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+    }
+
+    .nav-buttons button:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mobile-menu-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Featured Section */
+    .section-label {
+      font-weight: 600;
+      font-size: 20px;
+      padding: 15px 15px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .featured-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .featured-btn {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .featured-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .featured-container {
+      width: calc(100% - 30px);
+      max-width: 960px;
+      margin: 0 auto;
+      margin-bottom: 15px;
+      height: 150px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      transition: var(--transition);
+    }
+
+    .featured-container:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .featured-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(2px);
+    }
+
+    .featured-title {
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .featured-description {
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      max-width: 80%;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .featured-button {
+      background: rgba(147, 51, 234, 0.8);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .featured-button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    /* Games Grid */
+    .games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      padding: 15px;
+      justify-content: center;
+    }
+
+    .game {
+      position: relative;
+      width: 100%;
+      height: 150px;
+      border-radius: var(--radius);
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .game:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .game-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .game:hover .game-overlay {
+      opacity: 1;
+    }
+
+    .game-title {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
+
+    .game-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .game-tag {
+      background: rgba(147, 51, 234, 0.7);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: none;
+      cursor: pointer;
+      z-index: 5;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      user-select: none;
+      transition: var(--transition);
+      box-sizing: border-box;
+      padding: 6px;
+      /* Ensure button stays within parent bounds */
+      max-width: calc(100% - 16px);
+      max-height: calc(100% - 16px);
+    }
+
+    .game:hover .favorite-btn {
+      display: flex;
+    }
+
+    .favorite-btn.favorited {
+      color: #fbbf24;
+    }
+
+    .favorite-btn:hover {
+      background: rgba(147, 51, 234, 0.7);
+      transform: scale(1.1);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--text-tertiary);
+    }
+
+    /* Game View */
+    #game-view {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-primary);
+      z-index: 1000;
+      flex-direction: column;
+    }
+
+    #game-frame {
+      flex: 1;
+      border: none;
+      width: 100%;
+      background: var(--bg-primary);
+    }
+
+    .game-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .game-loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--bg-tertiary);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      height: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top-bar img {
+      height: 24px;
+    }
+
+    .top-bar h2 {
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .top-bar button {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 16px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      margin: 0 3px;
+    }
+
+    .top-bar button:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Keyboard Shortcuts Modal */
+    .shortcuts-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shortcuts-content {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 20px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .shortcuts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .shortcuts-header h3 {
+      font-size: 18px;
+    }
+
+    .shortcuts-close {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .shortcut-key {
+      background: var(--bg-tertiary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0; right: -300px;
+      width: 300px;
+      height: 100%;
+      background: var(--bg-secondary);
+      z-index: 200;
+      flex-direction: column;
+      padding: 20px;
+      transition: right 0.3s ease;
+      display: none;
+    }
+
+    .mobile-menu.active {
+      right: 0;
+      display: flex;
+    }
+
+    .mobile-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .mobile-menu-close {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .mobile-menu-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mobile-menu-item:hover {
+      color: var(--accent);
+    }
+
+    /* Compact Mode */
+    .compact-mode header {
+      padding: 5px 10px;
+    }
+
+    .compact-mode header img.logo {
+      height: 24px;
+    }
+
+    .compact-mode .search-container {
+      margin: 0 10px;
+      max-width: 200px;
+    }
+
+    .compact-mode .search-container input {
+      padding: 6px 10px 6px 28px;
+      font-size: 12px;
+    }
+
+    .compact-mode .search-icon {
+      left: 10px;
+      font-size: 12px;
+    }
+
+    .compact-mode .nav-buttons button {
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+
+    .compact-mode .theme-toggle {
+      width: 28px;
+      height: 28px;
+    }
+
+    .compact-mode .section-label {
+      font-size: 16px;
+      padding: 10px 10px 5px;
+    }
+
+    .compact-mode .featured-container {
+      height: 100px;
+    }
+
+    .compact-mode .featured-title {
+      font-size: 16px;
+    }
+
+    .compact-mode .featured-description {
+      font-size: 12px;
+    }
+
+    .compact-mode .games-container {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .compact-mode .game {
+      height: 120px;
+    }
+
+    .compact-mode .game-title {
+      font-size: 14px;
+    }
+
+    .compact-mode .top-bar {
+      height: 35px;
+      padding: 4px 8px;
+    }
+
+    .compact-mode .top-bar img {
+      height: 20px;
+    }
+
+    .compact-mode .top-bar h2 {
+      font-size: 12px;
+    }
+
+    .compact-mode .top-bar button {
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .games-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .search-container {
+        margin: 0 10px;
+      }
+
+      .nav-buttons {
+        gap: 5px;
+      }
+
+      .nav-buttons button {
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+
+      .section-label {
+        font-size: 18px;
+        padding: 12px 12px 5px;
+      }
+
+      .featured-container {
+        height: 120px;
+      }
+
+      .top-bar h2 {
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .games-container {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 8px 12px;
+      }
+
+      .search-container {
+        margin: 0 8px;
+      }
+
+      .nav-buttons {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .mobile-menu {
+        display: flex;
+      }
+    }
+
+    /* Glassmorphism Effects */
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body onload="initPage()">
+<!-- Intro Screen -->
+<div id="intro-screen">
+  <div class="intro-content">
+    <div class="dobberrated-container">
+      <div class="dobberrated" data-text="DOBBERRATED">DOBBERRATED</div>
+      <div class="dobberrated-scanner"></div>
+      <div class="dobberrated-slice"></div>
+    </div>
+    <div class="fluxis-container">
+      <div class="fluxis-glow"></div>
+      <img src="Fluxis.png" class="fluxis" alt="Fluxis" />
+    </div>
+    <div class="intro-presents">DOBBERRATED & FLUXIS PRESENT</div>
+  </div>
+</div>
+
+<div id="loading-screen">
+  <img src="Images/AgicLogoNoBg.png" class="loading-logo" alt="Agic Logo" />
+  <div class="loading-spinner"></div>
+  <div class="loading-message" id="loadingMessage">Loading awesome games...</div>
+  <div class="loading-bar">
+    <div class="loading-progress"></div>
+  </div>
+</div>
+
+<div id="main-content">
+<button class="panic-button" id="panicButton" onclick="togglePanicMode()" title="Press to quickly hide/show">
+  <i class="fas fa-eye-slash" id="panicIcon"></i>
+</button>
+
+<header>
+  <img src="Images/AgicLogoNoBg.png" class="logo" alt="Agic Logo" />
+  <div class="search-container">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="search" placeholder="Search games..." aria-label="Search games" />
+  </div>
+  <div class="nav-buttons">
+    <button onclick="showAllGames()" aria-label="All Games">
+      <i class="fas fa-gamepad"></i> All Games
+    </button>
+    <button onclick="showFavorites()" aria-label="Favorites">
+      <i class="fas fa-star"></i> Favorites
+    </button>
+    <button onclick="showRandomGame()" aria-label="Random Game">
+      <i class="fas fa-random"></i> Random
+    </button>
+    <button onclick="showShortcuts()" aria-label="Keyboard Shortcuts">
+      <i class="fas fa-keyboard"></i>
+    </button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+      <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+  </div>
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+    <i class="fas fa-bars"></i>
+  </button>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <h3>Menu</h3>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="mobile-menu-item" onclick="showAllGames(); toggleMobileMenu();">
+    <i class="fas fa-gamepad"></i> All Games
+  </div>
+  <div class="mobile-menu-item" onclick="showFavorites(); toggleMobileMenu();">
+    <i class="fas fa-star"></i> Favorites
+  </div>
+  <div class="mobile-menu-item" onclick="showRandomGame(); toggleMobileMenu();">
+    <i class="fas fa-random"></i> Random Game
+  </div>
+  <div class="mobile-menu-item" onclick="toggleTheme(); toggleMobileMenu();">
+    <i class="fas fa-moon" id="mobileThemeIcon"></i> Toggle Theme
+  </div>
+</div>
+
+<div class="section-label">
+  <span>Featured Games</span>
+  <div class="featured-controls">
+    <button class="featured-btn" onclick="previousFeatured()" aria-label="Previous Featured">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="featured-btn" onclick="nextFeatured()" aria-label="Next Featured">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</div>
+<div class="featured-container" id="featuredContainer">
+  <div class="featured-overlay">
+    <div class="featured-title" id="featuredTitle"></div>
+    <div class="featured-description" id="featuredDescription"></div>
+    <button class="featured-button" onclick="openGame(featuredGame)">Play Now</button>
+  </div>
+</div>
+
+<div class="section-label">
+  <span id="gamesSectionTitle">All Games</span>
+  <span id="gamesCount" style="font-size: 14px; color: var(--text-secondary);"></span>
+</div>
+<div class="games-container" id="gamesContainer"></div>
+
+<div id="game-view">
+  <div class="top-bar">
+    <div style="display: flex; align-items: center;">
+      <img src="Images/AgicLogoNoBg.png" alt="Agic Logo" />
+    </div>
+    <h2 id="gameTitle"></h2>
+    <div style="display: flex; align-items: center;">
+      <button class="fullscreen-btn tooltip" id="fullscreenBtn" onclick="toggleFullscreen()" data-tooltip="Fullscreen (F)">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button class="tooltip" onclick="closeGame()" data-tooltip="Close (Esc)">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <div class="game-loading" id="gameLoading">
+    <div class="game-loading-spinner"></div>
+    <div>Loading game...</div>
+  </div>
+  <iframe id="game-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock"></iframe>
+</div>
+
+<div class="shortcuts-modal" id="shortcutsModal">
+  <div class="shortcuts-content glass">
+    <div class="shortcuts-header">
+      <h3>Keyboard Shortcuts</h3>
+      <button class="shortcuts-close" onclick="closeShortcuts()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="shortcut-item">
+      <span>Close Game</span>
+      <span class="shortcut-key">Esc</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Toggle Fullscreen</span>
+      <span class="shortcut-key">F</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Search Games</span>
+      <span class="shortcut-key">Ctrl + K</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Toggle Theme</span>
+      <span class="shortcut-key">Ctrl + T</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Show Favorites</span>
+      <span class="shortcut-key">Ctrl + S</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Panic Mode</span>
+      <span class="shortcut-key">P</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  // Glitch effect for Dobberrated text
+  function initGlitchEffect() {
+    const dobberrated = document.querySelector('.dobberrated');
+    const originalText = dobberrated.textContent;
+    
+    setInterval(() => {
+      if (Math.random() > 0.9) {
+        const glitchText = originalText.split('').map(char => {
+          if (Math.random() > 0.5) {
+            return String.fromCharCode(Math.floor(Math.random() * 128));
+          }
+          return char;
+        }).join('');
+        
+        dobberrated.textContent = glitchText;
+        
+        setTimeout(() => {
+          dobberrated.textContent = originalText;
+        }, 100);
+      }
+    }, 200);
+  }
+  
+  // Initialize glitch effect
+  initGlitchEffect();
+
+  // Configuration
+  const BASE_URLS = {
+    base1: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles384207-1/", active: true },
+    base2: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles527194-2/other/", active: true },
+    base3: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/", active: true },
+    base4: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles527194-2/other1/", active: true },
+    base5: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles527194-2/other2/", active: true },
+    base6: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles527194-2/other4/", active: true },
+    base7: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles527194-2/other3/", active: true },
+    base8: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles183294-4/", active: true },
+    base9: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles48018-3/", active: true },
+    base10: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles91738-5/", active: true },
+    base11: { url: "https://a7k9-Lq2d-V8r1-zX0c-Mb6p-Tn4g-Wy3e-Ju5h.github.io/AgicFiles018374-6/", active: true },
+    base12: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/fnf/", active: true },
+    base13: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/MassiveStorage/", active: true },
+    base14: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/minecraft/", active: true },
+    base15: { url: "https://mragic.github.io/project/", active: false },
+    base16: { url: "https://mragic.github.io/project/", active: false },
+    base17: { url: "https://mragic.github.io/project/", active: false },
+    base18: { url: "https://mragic.github.io/project/", active: false },
+    base19: { url: "https://mragic.github.io/project/", active: false },
+    base20: { url: "https://mragic.github.io/project/", active: false }
+  };
+
+  // Game data with categories and descriptions
+  const games = [
+    { name: "Cookie Clicker", image: "Images/cookieclicker.jpeg", path: "cookieclicker/", category: ["idle", "puzzle"], description: "Bake cookies and build a cookie empire!" },
+    { name: "Doge Miner", image: "Images/dogeminer.png", path: "DogeMiner/", category: ["idle", "arcade"], description: "Mine dogecoins and travel to the moon!" },
+    { name: "Flappy Bird", image: "Images/Flappybird.jpg", path: "flappy/", category: ["arcade", "action"], description: "Navigate through pipes without touching them!" },
+    { name: "2048", image: "Images/2048.jpg", path: "2048/", category: ["puzzle"], description: "Combine tiles to reach 2048!" },
+    { name: "Five Nights at Freddy's 4", image: "Images/FNAFS4.png", path: "FNAF4/", category: ["horror", "action"], description: "Survive five nights with Freddy and friends!" },
+    { name: "Basketball Stars", image: "Images/BasketballStars.jpeg", path: "basketball-stars/", category: ["sports"], description: "Compete in basketball challenges!" },
+    { name: "Doodle Jump", image: "Images/doodlejump.jpg", path: "doodle/", category: ["arcade"], description: "Jump as high as you can!" },
+    { name: "Slope", image: "Images/slope.jpg", path: "slope/", category: ["action", "arcade"], description: "Roll down the slope without falling!" },
+    { name: "AdVenture Capitalist", image: "Images/AdVentureCapitalist.jpg", path: "adcap/", category: ["idle", "strategy"], description: "Build your business empire from scratch!" },
+    { name: "A Dance Of Fire And Ice", image: "Images/adofai.png", path: "adofai/", category: ["rhythm", "action"], description: "Rhythm game with one-button controls!" },
+    { name: "Baldi's Basics in Education and Learning", image: "Images/BaldisBasics.png", path: "baldi/", category: ["horror", "puzzle"], description: "Solve math problems while avoiding Baldi!" },
+    { name: "Burrito Bison", image: "Images/BurritoBison.jpg", path: "bison/", category: ["action", "arcade"], description: "Launch as far as possible and smash gummies!" },
+    { name: "Twitch Tetris", image: "Images/TwitchTetris.png", path: "tetris/", category: ["puzzle"], description: "Classic tetris with a twist!" },
+    { name: "BitLife", image: "Images/BitLife.png", path: "bitlife/", category: ["simulation", "strategy"], description: "Live a virtual life from birth to death!" },
+    { name: "Boxing Physics 2", image: "Images/BoxingPhysics2.jpg", path: "boxing-physics2/", category: ["sports", "action"], description: "Physics-based boxing game!" },
+    { name: "BreakLock", image: "Images/BreakLock.jpg", path: "breaklock/", category: ["puzzle"], description: "Solve the lock puzzle!" },
+    { name: "Burger & Frights", image: "Images/Burger&Frights.png", path: "burger/", category: ["horror", "action"], description: "Deliver burgers through a dark forest!" },
+    { name: "Cell To Singularity", image: "Images/CellToSingularity.jpg", path: "cell/", category: ["idle", "strategy"], description: "Evolve from single cell to space civilization!" },
+    { name: "Chrome Dino", image: "Images/ChromeDIno.png", path: "chrome-dino/", category: ["arcade"], description: "The classic Chrome dinosaur game!" },
+    { name: "Sort The Court", image: "Images/SortTheCourt.jpg", path: "court/", category: ["strategy", "puzzle"], description: "Make decisions as a ruler to grow your kingdom!" },
+    { name: "Crossy Road", image: "Images/CrossyRoad.png", path: "crossy/", category: ["arcade", "action"], description: "Cross roads, train tracks, and rivers!" },
+    { name: "Fruit Ninja", image: "Images/FruitNinja.jpg", path: "fruitninja/", category: ["action", "arcade"], description: "Slice fruits while avoiding bombs!" },
+    { name: "Doodle God", image: "Images/DoodleGod.jpg", path: "doodlegod/", category: ["puzzle", "strategy"], description: "Combine elements to create new ones!" },
+    { name: "Dreader", image: "Images/Dreader.png", path: "dreader/", category: ["horror", "puzzle"], description: "Navigate through a dark maze!" },
+    { name: "Exhibit Of Sorrows", image: "Images/ExhibitOfSorrows.png", path: "exhibit/", category: ["horror", "puzzle"], description: "Explore a mysterious exhibit!" },
+    { name: "Friday Night Funkin´", image: "Images/FridayNightFunkin.png", path: "fnf-w7/", category: ["rhythm", "music"], description: "Battle through music rap battles!" },
+    { name: "Papa's Freezeria", image: "Images/PapasFreezeria.jpg", path: "freezeria/", category: ["simulation", "strategy"], description: "Run a freezeria and serve customers!" },
+    { name: "Friendly Fire", image: "Images/FriendlyFire.jpg", path: "friendlyfire/", category: ["action", "puzzle"], description: "Guide your troops to victory!" },
+    { name: "Game Inside A Game", image: "Images/GameInsideAGame.jpg", path: "game-inside/", category: ["puzzle", "arcade"], description: "A game within a game within a game!" },
+    { name: "George And The Printer", image: "Images/GeorgeAndThePrinter.jpg", path: "dreader/", category: ["puzzle", "horror"], description: "Help George with his printer!" },
+    { name: "Getaway Shootout", image: "Images/%20GetawayShootout.jpg", path: "getaway-shootout/", category: ["action", "multiplayer"], description: "Race to the getaway point!" },
+    { name: "Grey-Box Tesing", image: "Images/GreyBoxTesting.jpg", path: "greybox/", category: ["puzzle"], description: "Test the grey box!" },
+    { name: "Happy Wheels", image: "Images/HappyWheels.png", path: "580301-HappyWheels/", category: ["action", "racing"], description: "Navigate through obstacle courses!" },
+    { name: "Papa's Hot Doggeria", image: "Images/PapasHotDoggeria.jpg", path: "hotdoggeria/", category: ["simulation", "strategy"], description: "Run a hot dog stand at a baseball stadium!" },
+    { name: "Jetpack Joyride", image: "Images/JetpackJoyride.png", path: "jetpackjoyride/", category: ["action", "arcade"], description: "Fly with a jetpack and avoid obstacles!" },
+    { name: "Knife Hit", image: "Images/KnifeHit.png", path: "knifehit/", category: ["action", "arcade"], description: "Throw knives at targets without hitting other knives!" },
+    { name: "Apple Knight", image: "Images/AppleKnight.png", path: "knight/", category: ["action", "adventure"], description: "Embark on an adventure as Apple Knight!" },
+    { name: "Lose95", image: "Images/Lose95.png", path: "lose95/", category: ["puzzle", "simulation"], description: "Experience Windows 95 in a new way!" },
+    { name: "Papa Louie", image: "Images/PapaLouie.jpeg", path: "louie/", category: ["action", "adventure"], description: "Rescue customers from mutant food monsters!" },
+    { name: "Super Mario Bros. Versus", image: "Images/SuperMarioBrosVersus.jpg", path: "mariovsluigi/", category: ["action", "multiplayer"], description: "Mario vs Luigi in a battle!" },
+    { name: "Minecraft Classic", image: "Images/MinecraftClassic.png", path: "mcbeta0.30/", category: ["creative", "multiplayer"], description: "Classic Minecraft in your browser!" },
+    { name: "The Open House", image: "Images/TheOpenHouse.jpg", path: "open/", category: ["horror", "puzzle"], description: "Explore an open house with secrets!" },
+    { name: "Papa's Burgeria", image: "Images/PapasBurgeria.jpg", path: "papasb/", category: ["simulation", "strategy"], description: "Run a burger restaurant!" },
+    { name: "Papa's Pizzeria", image: "Images/PapasPizzeria.jpg", path: "pizzeria/", category: ["simulation", "strategy"], description: "Make and serve pizzas to customers!" },
+    { name: "Portaboy", image: "Images/Portaboy.jpg", path: "portaboy/", category: ["puzzle", "arcade"], description: "Play mini-games on a virtual console!" },
+    { name: "Pressing Under Pressure", image: "Images/PressingUnderPressure.jpg", path: "pressing/", category: ["puzzle", "action"], description: "Press buttons under pressure!" },
+    { name: "Retro Bowl", image: "Images/RetroBowl.jpg", path: "retro-bowl/", category: ["sports", "strategy"], description: "Lead your team to victory in Retro Bowl!" },
+    { name: "Robogo", image: "Images/Robogo.png", path: "robogo/", category: ["puzzle", "strategy"], description: "Guide robots to their destinations!" },
+    { name: "Run 3", image: "Images/Run3.png", path: "Run3/", category: ["action", "arcade"], description: "Run through space tunnels!" },
+    { name: "Bad Time Simulator (Sans Fight)", image: "Images/BadTimeSimulator.png", path: "sansfight/", category: ["action", "rpg"], description: "Battle Sans from Undertale!" },
+    { name: "Sketchbook", image: "Images/Sketchbook.jpg", path: "sketchbook/", category: ["creative"], description: "Draw and create in your sketchbook!" },
+    { name: "Super Mario 64", image: "Images/SuperMario64.jpg", path: "sm64/", category: ["action", "adventure"], description: "Classic Mario 64 in your browser!" },
+    { name: "Snake", image: "Images/Snake.png", path: "snake/", category: ["arcade", "puzzle"], description: "Classic snake game!" },
+    { name: "Superhot", image: "Images/Superhot.png", path: "superhot/", category: ["action", "puzzle"], description: "Time moves only when you move!" },
+    { name: "Deepest Sword", image: "Images/DeepestSword.jpg", path: "sword/", category: ["puzzle", "action"], description: "Use your sword to reach the dragon's heart!" },
+    { name: "Papa's Taco Mia", image: "Images/PapasTacoMia.png", path: "tacomia/", category: ["simulation", "strategy"], description: "Run a taco restaurant!" },
+    { name: "Tunnel Rush", image: "Images/TunnelRush.png", path: "tunnelrush/", category: ["action", "arcade"], description: "Navigate through a tunnel at high speed!" },
+    { name: "We Become What We Behold", image: "Images/WeBecomeWhatWeBehold.jpg", path: "wbwwb/", category: ["puzzle", "simulation"], description: "A game about media cycles!" },
+    { name: "Wordle Unlimited", image: "Images/Wordle.png", path: "wordle/", category: ["puzzle", "word"], description: "Guess the word in 6 tries!" },
+    { name: "Wounded Summer", image: "Images/WoundedSummer.png", path: "wounded-summer/", category: ["action", "adventure"], description: "Survive the summer!" },
+    { name: "Xx142-b2exe", image: "Images/Xx142-b2exe.png", path: "xx142-b2exe/", category: ["puzzle", "horror"], description: "Decode the mysterious file!" },
+    { name: "Among Us", image: "Images/AmongUs.jpg", path: "amongus/", category: ["multiplayer", "action"], description: "Find the impostor among the crew!" },
+    { name: "Block Blast", image: "Images/BlockBlast.png", path: "blockblast/", category: ["puzzle", "arcade"], description: "Blast blocks and clear the board!" },
+    { name: "Big Tower Tiny Square", image: "Images/BigTowerTinySquare.png", path: "bigtowertinysquare/", category: ["action", "puzzle"], description: "Climb the big tower!" },
+    { name: "Blumgi Slime", image: "Images/BlumjiSlime.jpg", path: "blumgislime/", category: ["action", "arcade"], description: "Jump and bounce as a slime!" },
+    { name: "Box Chase", image: "Images/BoxChase.png", path: "boxchase/", category: ["action", "puzzle"], description: "Chase boxes and solve puzzles!" },
+    { name: "Capybara Clicker", image: "Images/CapybaraClicker.png", path: "capybaraclicker/", category: ["idle", "arcade"], description: "Click capybaras and build your capybara empire!" },
+    { name: "CCMMYY", image: "Images/CCMMYY.png", path: "ccmmyy/", category: ["puzzle", "action"], description: "Solve the color puzzle!" },
+    { name: "Impossible Cookie Clicker", image: "Images/ImpossibleCookieClicker.png", path: "impossiblecookieclicker/", category: ["idle", "puzzle"], description: "The impossible version of Cookie Clicker!" },
+    { name: "Breakout", image: "Images/Breakout.png", path: "breakout/", category: ["arcade", "puzzle"], description: "Classic breakout game!" },
+    { name: "Checkers", image: "Images/Checkers.png", path: "checkers/", category: ["strategy", "board"], description: "Classic checkers game!" },
+    { name: "Chess", image: "Images/Chess.png", path: "chess/", category: ["strategy", "board"], description: "Classic chess game!" },
+    { name: "Cluster Rush", image: "Images/ClusterRush.jpg", path: "clusterrush/", category: ["action", "arcade"], description: "Navigate through clusters at high speed!" },
+    { name: "Cut The Rope", image: "Images/CutTheRope.png", path: "cuttherope/", category: ["puzzle", "physics"], description: "Cut ropes to feed candy to Om Nom!" },
+    { name: "Deadly Descent", image: "Images/DeadlyDescent.png", path: "deadlydescent/", category: ["action", "arcade"], description: "Descend through dangerous terrain!" },
+    { name: "Doge Miner 2", image: "Images/DogeMiner2.png", path: "dogeminer2/", category: ["idle", "arcade"], description: "Mine even more dogecoins in the sequel!" },
+    { name: "Eggy Car", image: "Images/EggyCar.png", path: "eggycar/", category: ["action", "physics"], description: "Drive a car with an egg on top!" },
+    { name: "Getting Over It", image: "Images/GettingOverIt.png", path: "gettingoveritscratch/", category: ["action", "puzzle"], description: "Climb a mountain with a hammer!" },
+    { name: "Gladihoppers", image: "Images/GladiHoppers.png", path: "gladihoppers/", category: ["action", "sports"], description: "Battle as a gladiator!" },
+    { name: "Google Baseball", image: "Images/GoogleBaseball.jpeg", path: "googlebaseball/", category: ["sports", "arcade"], description: "Google's baseball game!" },
+    { name: "Five Nights at Freddy's 2", image: "Images/FNAF2.png", path: "fnaf2/", category: ["horror", "action"], description: "Survive five nights at Freddy's 2!" },
+    { name: "Drive Mad", image: "Images/DriveMad.png", path: "drivemad/", category: ["action", "racing"], description: "Drive through challenging tracks!" },
+    { name: "Drift Boss", image: "Images/DriftBoss.png", path: "driftboss/", category: ["action", "racing"], description: "Drift through corners!" },
+    { name: "Five Nights at Winston's", image: "Images/FiveNightsAtWinstons.png", path: "fnaw/", category: ["horror", "action"], description: "Survive five nights at Winston's!" },
+    { name: "Slither.io Remake", image: "Images/Slither.ioRemake.png", path: "slitherio/", category: ["multiplayer", "action"], description: "Grow your snake by eating pellets!" },
+    { name: "Snow Rider 3D", image: "Images/SnowRider3D.png", path: "snowrider3d/", category: ["action", "sports"], description: "Snowboard down the mountain!" },
+    { name: "Stack", image: "Images/Stack.png", path: "stack/", category: ["puzzle", "arcade"], description: "Stack blocks as high as you can!" },
+    { name: "Subway Surfers San Francisco", image: "Images/SubwaySurfersSanFrancisco.png", path: "subwaysurfers/", category: ["action", "arcade"], description: "Surf through San Francisco!" },
+    { name: "There Is No Game", image: "Images/ThereIsNoGame.png", path: "thereisnogame/", category: ["puzzle", "adventure"], description: "A game that insists it's not a game!" },
+    { name: "Tiny Cars", image: "Images/TinyCars.png", path: "tinycars/", category: ["action", "racing"], description: "Race tiny cars!" },
+    { name: "Tiny Fishing", image: "Images/TinyFishing.png", path: "tinyfishing/", category: ["arcade", "simulation"], description: "Catch tiny fish!" },
+    { name: "Unicycle Hero", image: "Images/UnicycleHero.png", path: "unicyclehero/", category: ["sports", "action"], description: "Balance on a unicycle!" },
+    { name: "Wolfenstein 3D", image: "Images/Wolfenstein3D.png", path: "wolfenstein3d/", category: ["action", "shooter"], description: "Classic 3D shooter game!" },
+    { name: "Idle Ants", image: "Images/IdleAnts.png", path: "idleants/", category: ["idle", "simulation"], description: "Manage an ant colony!" },
+    { name: "Idle Breakout", image: "Images/IdleBreakout.png", path: "idlebreakout/", category: ["idle", "puzzle"], description: "Idle version of breakout!" },
+    { name: "Idle Dice", image: "Images/IdleDice.png", path: "idledice/", category: ["idle", "puzzle"], description: "Roll dice and earn points!" },
+    { name: "Mari0", image: "Images/Mari0.png", path: "mari0/", category: ["action", "puzzle"], description: "Mario with portal gun mechanics!" },
+    { name: "MotoX3M", image: "Images/MotoX3M.png", path: "motox3m/", category: ["action", "sports"], description: "Complete motocross challenges!" },
+    { name: "OvO", image: "Images/OvO.png", path: "ovo/", category: ["action", "puzzle"], description: "Navigate through challenging levels!" },
+    { name: "Race Survival", image: "Images/RaceSurvival.png", path: "racesurvival/", category: ["action", "racing"], description: "Survive the race!" },
+    { name: "Recoil", image: "Images/Recoil.png", path: "recoil/", category: ["action", "shooter"], description: "Shoot and recoil to move!" },
+    { name: "RRGGBB", image: "Images/RRGGBB.png", path: "rrggbb/", category: ["puzzle", "action"], description: "Color-based puzzle game!" },
+    { name: "Resizer", image: "Images/Resizer.png", path: "resizer/", category: ["puzzle", "action"], description: "Resize objects to solve puzzles!" },
+    { name: "Polytrack", image: "Images/Polytrack.png", path: "polytrack/", category: ["action", "racing"], description: "Race on polygonal tracks!" },
+    { name: "Googlefeud", image: "Images/Googlefeud.png", path: "googlefeud/", category: ["puzzle", "word"], description: "Guess Google search suggestions!" },
+    { name: "Let's Surf", image: "Images/Letssurf.png", path: "letssurf/", category: ["action", "sports"], description: "Surf the waves!" },
+    { name: "Minecraft 1.5.2", image: "Images/Minecraft1.5.2.png", path: "AWeb/", category: ["creative", "survival"], description: "Play Minecraft 1.5.2 in your browser!" },
+    { name: "Minecraft 1.8.8", image: "Images/Minecraft1.8.8.png", path: "minecraft18/", category: ["creative", "survival"], description: "Play Minecraft 1.8.8 in your browser!" },
+    { name: "Monster Tracks", image: "Images/Monstertracks.png", path: "monstertracks/", category: ["action", "racing"], description: "Race on monster tracks!" },
+    { name: "MotoX3M 2", image: "Images/MotoX3M2.png", path: "motox3m2/", category: ["action", "sports"], description: "More motocross challenges!" },
+    { name: "Grind Craft", image: "Images/GrindCraft.png", path: "grindcraft/", category: ["idle", "puzzle"], description: "Grind resources and craft items!" },
+    { name: "Pacman", image: "Images/Pacman.png", path: "pacman/", category: ["arcade", "puzzle"], description: "Classic Pacman game!" },
+    { name: "Plants Vs. Zombies", image: "Images/PVZ.png", path: "plantsvszombies/", category: ["strategy", "action"], description: "Defend your home from zombies!" },
+    { name: "Pool", image: "Images/Pool.png", path: "pool/", category: ["sports", "puzzle"], description: "Classic pool game!" },
+    { name: "Minecraft Tower Defense", image: "Images/mctd.png", path: "mctd/", category: ["strategy", "tower defense"], description: "Tower defense with Minecraft theme!" },
+    { name: "Minecraft Tower Defense 2", image: "Images/mctd2.jpg", path: "mctd2/", category: ["strategy", "tower defense"], description: "More Minecraft tower defense!" },
+    { name: "Draw The Hill", image: "Images/DrawTheHill.png", path: "draw-the-hill/", category: ["puzzle", "action"], description: "Draw hills to guide the car!" },
+    { name: "Five Nights at Freddy's", image: "Images/Fnaf.png", path: "FNAF1/index.html", category: ["horror", "action"], description: "Survive five nights at Freddy's!" },
+    { name: "Five Nights at Freddy's 3", image: "Images/Fnaf3.png", path: "FNAF3/index.html", category: ["horror", "action"], description: "Survive five nights at Freddy's 3!" },
+    { name: "Kitchen Gun", image: "Images/KitchenGun.png", path: "kitchen-gun-game/", category: ["action", "shooter"], description: "Shoot with a kitchen gun!" },
+    { name: "Noob Steve Parkour", image: "Images/NoobSteveParkour.png", path: "noob-steve-parkour/", category: ["action", "puzzle"], description: "Parkour as Noob Steve!" },
+    { name: "Polybranch", image: "Images/Polybranch.png", path: "polybranch/", category: ["puzzle", "action"], description: "Grow branches without colliding!" },
+    { name: "Popcat", image: "Images/Popcat.png", path: "popcat-classic/", category: ["arcade", "clicker"], description: "Click the popcat!" },
+    { name: "Push Your Luck", image: "Images/PushYourLuck.png", path: "push-your-luck/", category: ["puzzle", "strategy"], description: "Test your luck!" },
+    { name: "The Heist", image: "Images/TheHeist.png", path: "theheist/", category: ["puzzle", "action"], description: "Plan and execute a heist!" },
+    { name: "Tomb Of The Mask", image: "Images/TombOfTheMask.png", path: "tomb/", category: ["action", "arcade"], description: "Navigate through the tomb!" },
+    { name: "Mine Sweeper", image: "Images/MineSweepers.png", path: "minesweeper/", category: ["puzzle", "strategy"], description: "Classic minesweeper game!" },
+    { name: "99 Balls", image: "Images/99BallsEvo.png", path: "99balls/", category: ["puzzle", "action"], description: "Shoot balls to break blocks!" },
+    { name: "Angry Birds Slingshot Frenzy", image: "Images/AngryBirdsSlingshotFrenzy.png", path: "AngryBirds/", category: ["action", "puzzle"], description: "Launch birds at pigs!" },
+    { name: "HexGL Master", image: "Images/HexGL.png", path: "HexGL-master/", category: ["action", "racing"], description: "Futuristic racing game!" },
+    { name: "Adventure Drivers", image: "Images/AdventureDrivers.png", path: "adventure-drivers/", category: ["action", "racing"], description: "Race through adventure tracks!" },
+    { name: "Amazing Strange Rope Police", image: "Images/AmazingStrangeRopePolice.png", path: "amazing-rope-police/", category: ["action", "adventure"], description: "Be a rope police hero!" },
+    { name: "Angry Sharks", image: "Images/AngrySharks.png", path: "angry-sharks/", category: ["action", "survival"], description: "Survive angry sharks!" },
+    { name: "The Backrooms 2D", image: "Images/TheBackrooms2D.png", path: "backrooms-2d/", category: ["horror", "puzzle"], description: "Navigate the backrooms in 2D!" },
+    { name: "Champion Island", image: "Images/GoogleChampionIsland.png", path: "champion-island/", category: ["sports", "adventure"], description: "Google's Champion Island game!" },
+    { name: "Cut The Rope Holiday Gift", image: "Images/CutTheRopeHolidayGift.png", path: "ctr-holiday/", category: ["puzzle", "physics"], description: "Holiday version of Cut The Rope!" },
+    { name: "Connect 3", image: "Images/Connect3.png", path: "connect3/", category: ["puzzle", "strategy"], description: "Connect three or more items!" },
+    { name: "Cut The Rope Time Travel", image: "Images/CutTheRopeTimeTravel.png", path: "ctr-tr/", category: ["puzzle", "physics"], description: "Time travel version of Cut The Rope!" },
+    { name: "MotoX3M Pool Party", image: "Images/MotoX3M3.png", path: "motox3m-pool/", category: ["action", "sports"], description: "MotoX3M pool party edition!" },
+    { name: "MotoX3M Spooky Land", image: "Images/MotoX3M5.png", path: "motox3m-spooky/", category: ["action", "sports"], description: "MotoX3M spooky land edition!" },
+    { name: "Moto X3M Winter", image: "Images/MotoX3M4.png", path: "motox3m-winter/", category: ["action", "sports"], description: "MotoX3M winter edition!" },
+    { name: "Station 141", image: "Images/Station141.png", path: "station-141/", category: ["horror", "puzzle"], description: "Survive station 141!" },
+    { name: "Stickman Hook", image: "Images/StickmanHook.png", path: "stickman-hook/", category: ["action", "puzzle"], description: "Swing as a stickman!" },
+    { name: "Tank Trouble 2", image: "Images/TankTrouble2.png", path: "tank-trouble-2/", category: ["action", "multiplayer"], description: "Battle with tanks!" },
+    { name: "Time Shooter 2", image: "Images/TimeShooter2.png", path: "time-shooter-2/", category: ["action", "shooter"], description: "Time moves only when you move!" },
+    { name: "4 Colors Multiplayer", image: "Images/4ColorsMultiplayer.png", path: "uno/", category: ["multiplayer", "card"], description: "Multiplayer card game!" },
+    { name: "The Bowling Club", image: "Images/TheBowlingClub.png", path: "thebowlingclub/", category: ["sports", "multiplayer"], description: "Bowling with friends!" },
+    { name: "Madalin Stunt Cars 2", image: "Images/MadalinStuntCars2.png", path: "stuntcars/", category: ["action", "racing", "multiplayer"], description: "Perform stunts with cars!" },
+    { name: "Tanuki Sunset", image: "Images/TankuSunset.png", path: "TANUKISUNSET/", category: ["action", "sports"], description: "Skateboard as a tanuki!" },
+    { name: "Music Ball", image: "Images/MusicBall.png", path: "MUSICBALL/", category: ["rhythm", "puzzle"], description: "Bounce to the music!" },
+    { name: "Marble Race Creator", image: "Images/MarbleRaceCreator.png", path: "MARBLERACEMAKER/", category: ["creative", "racing"], description: "Create marble races!" },
+    { name: "Hard Golf", image: "Images/HardGolf.png", path: "HARDGOLF/", category: ["sports", "puzzle"], description: "Challenging golf game!" },
+    { name: "Bongo Cat", image: "Images/BongoCat.png", path: "BANGOCAT/", category: ["music", "rhythm"], description: "Play music as Bongo Cat!" },
+    { name: "CYBER TUNNEL", image: "Images/CyberTunnelEscape.png", path: "CYBERTUNNEL/", category: ["action", "arcade"], description: "Escape the cyber tunnel!" },
+    { name: "Friday Night Funkin' Atsuover", image: "Images/FNFAtsuover.png", path: "ann/", category: ["rhythm", "music"], description: "Friday Night Funkin' Atsuover mod!" },
+    { name: "Friday Night Funkin' B Sides", image: "Images/FNFBSides.png", path: "bsides/", category: ["rhythm", "music"], description: "Friday Night Funkin' B Sides mod!" },
+    { name: "Friday Night Funkin' Deep Sea Date", image: "Images/FNFDeepSeaDate.png", path: "deepseadate/", category: ["rhythm", "music"], description: "Friday Night Funkin' Deep Sea Date mod!" },
+    { name: "Friday Night Funkin' Everywhere At The End Of Funk", image: "Images/FNFEATEOF.png", path: "everywhereattheendoffunk/", category: ["rhythm", "music"], description: "Friday Night Funkin' EATEOF mod!" },
+    { name: "Friday Night Funkin' FlipSide", image: "Images/FNFFlipSide.png", path: "flipside/", category: ["rhythm", "music"], description: "Friday Night Funkin' FlipSide mod!" },
+    { name: "Friday Night Funkin' Hell Beats", image: "Images/FNFHellBeats.png", path: "h3llbeats/", category: ["rhythm", "music"], description: "Friday Night Funkin' Hell Beats mod!" },
+    { name: "Friday Night Funkin' Henry Stickmin", image: "Images/FNFHenryStickmin.png", path: "henry/", category: ["rhythm", "music"], description: "Friday Night Funkin' Henry Stickmin mod!" },
+    { name: "Friday Night Funkin' Hex", image: "Images/FNFHex.png", path: "hex/", category: ["rhythm", "music"], description: "Friday Night Funkin' Hex mod!" },
+    { name: "Friday Night Funkin' Kapi", image: "Images/FNFKapi.png", path: "kapi/", category: ["rhythm", "music"], description: "Friday Night Funkin' Kapi mod!" },
+    { name: "Friday Night Funkin' Shaggy X Matt", image: "Images/FNFShaggyXMatt.png", path: "shaggymatt/", category: ["rhythm", "music"], description: "Friday Night Funkin' Shaggy X Matt mod!" },
+    { name: "Friday Night Funkin' Miku", image: "Images/FNFMiku.png", path: "Miku/", category: ["rhythm", "music"], description: "Friday Night Funkin' Miku mod!" },
+    { name: "Friday Night Funkin' Matt", image: "Images/FNFMatt.png", path: "matt/", category: ["rhythm", "music"], description: "Friday Night Funkin' Matt mod!" },
+    { name: "Friday Night Funkin' Minus", image: "Images/FNFMinus.png", path: "minus/", category: ["rhythm", "music"], description: "Friday Night Funkin' Minus mod!" },
+    { name: "Friday Night Funkin' Monika", image: "Images/FNFMonika.png", path: "monika/", category: ["rhythm", "music"], description: "Friday Night Funkin' Monika mod!" },
+    { name: "Friday Night Funkin' Neo", image: "Images/FNFNeo.png", path: "neo/", category: ["rhythm", "music"], description: "Friday Night Funkin' Neo mod!" },
+    { name: "Friday Night Funkin' Rose Criminal", image: "Images/FNFRoseCriminal.png", path: "rosecriminal/", category: ["rhythm", "music"], description: "Friday Night Funkin' Rose Criminal mod!" },
+    { name: "Friday Night Funkin' Xe", image: "Images/FNFXe.png", path: "XE/", category: ["rhythm", "music"], description: "Friday Night Funkin' Xe mod!" },
+    { name: "Stick Defenders", image: "Images/StickDefenders.png", path: "stickdefenders/", category: ["action", "strategy"], description: "Defend as stickmen!" },
+    { name: "Jelly Truck", image: "Images/JellyTruck.png", path: "jellytruck/", category: ["action", "racing"], description: "Drive a jelly truck!" },
+    { name: "1v1 lol", image: "Images/1v1Lol.png", path: "1v1-lol/", category: ["action", "multiplayer"], description: "Battle in 1v1 matches!" },
+    { name: "Bloxorz", image: "Images/Bloxorz.png", path: "bloxors/", category: ["puzzle", "strategy"], description: "Roll the block to the goal!" },
+    { name: "Ballistic Chickens", image: "Images/BallisticChickens.png", path: "ballistic-chickens/", category: ["action", "puzzle"], description: "Launch ballistic chickens!" },
+    { name: "Dadish", image: "Images/Dadish.png", path: "dadish/", category: ["action", "puzzle"], description: "Help Dadish find his kids!" },
+    { name: "Dadish 2", image: "Images/Dadish2.png", path: "dadish-2/", category: ["action", "puzzle"], description: "More Dadish adventures!" },
+    { name: "Death Run 3D", image: "Images/DeathRun3D.png", path: "deathrun/", category: ["action", "arcade"], description: "Survive the death run!" },
+    { name: "Death Soul", image: "Images/DeathSoul.png", path: "deathsoul/", category: ["horror", "action"], description: "Navigate as a death soul!" },
+    { name: "Doge 2048", image: "Images/Doge2048.png", path: "doge2048/", category: ["puzzle", "arcade"], description: "2048 with doge theme!" },
+    { name: "Duck Life", image: "Images/DuckLife.png", path: "duck-life/", category: ["sports", "simulation"], description: "Train your duck to be a champion!" },
+    { name: "Duck Life 2", image: "Images/DuckLife2.png", path: "duck-life-2/", category: ["sports", "simulation"], description: "More duck training adventures!" },
+    { name: "Duck Life 3", image: "Images/DuckLife3.png", path: "duck-life-3/", category: ["sports", "simulation"], description: "Evolution in Duck Life!" },
+    { name: "Duck Life 4", image: "Images/DuckLife4.png", path: "duck-life-4/", category: ["sports", "simulation"], description: "Ultimate duck training!" },
+    { name: "Earn To Die 2012", image: "Images/EarnToDie2012.png", path: "earn-to-die/", category: ["action", "racing"], description: "Drive through zombies!" },
+    { name: "Eat Small Fishes", image: "Images/EatSmallFishes.png", path: "eat-small-fishes/", category: ["action", "arcade"], description: "Eat smaller fish to grow!" },
+    { name: "WebGL Fluid Simulation", image: "Images/WebGLFluidSimulation.png", path: "fluid-simulator/", category: ["simulation", "creative"], description: "Interactive fluid simulation!" },
+    { name: "Basket Random", image: "Images/BasketRandom.png", path: "basket-random/", category: ["sports", "multiplayer"], description: "Random basketball fun!" },
+    { name: "Bejeweled", image: "Images/Bejeweled.png", path: "bejeweled/", category: ["puzzle", "arcade"], description: "Match gems in Bejeweled!" },
+    { name: "Breaking The Bank", image: "Images/BreakingTheBank.png", path: "breakingthebank/", category: ["puzzle", "adventure"], description: "Find creative ways to break the bank!" },
+    { name: "Cannon Basketball 4", image: "Images/CannonBasketball4.png", path: "cannon-basketball-4/", category: ["puzzle", "sports"], description: "Shoot basketballs with cannons!" },
+    { name: "Contre Jour", image: "Images/ContreJour.png", path: "ContreJour/", category: ["puzzle", "physics"], description: "Manipulate the environment to guide the creature!" },
+    { name: "DOOMORI", image: "Images/Doomori.png", path: "DOOMORI/", category: ["horror", "puzzle"], description: "Doom-inspired horror game!" },
+    { name: "Flappy Zig Zag", image: "Images/FlappyZigZag.png", path: "Flappy-ZigZag/", category: ["arcade", "action"], description: "Flappy bird with zig zag movement!" },
+    { name: "Gons.io", image: "Images/Gons.io.png", path: "gons/", category: ["multiplayer", "action"], description: "Battle against other players!" },
+    { name: "House Of Hazards", image: "Images/HouseOfHazards.png", path: "houseofhazards/", category: ["action", "multiplayer"], description: "Navigate through hazardous house!" },
+    { name: "Idle Merge Car And Race", image: "Images/IdleMergeCarAndRace.png", path: "idle-merge-car-and-race/", category: ["idle", "racing"], description: "Merge cars and race!" },
+    { name: "Just Fall LOL", image: "Images/JustFallLol.png", path: "justfall/", category: ["multiplayer", "action"], description: "Survive falling platforms!" },
+    { name: "JustOneBoss", image: "Images/JustOneBoss.png", path: "justoneboss/", category: ["action", "puzzle"], description: "Battle against one boss!" },
+    { name: "Mini Battle City", image: "Images/MiniBattleCity.png", path: "BattleCityMini/", category: ["action", "multiplayer"], description: "Mini tank battles!" },
+    { name: "The Impossible Quiz", image: "Images/TheImpossibleQuiz.png", path: "impossiblequiz/", category: ["puzzle", "quiz"], description: "Answer impossible questions!" },
+    { name: "Fireboy and Watergirl 1: Forest Temple", image: "Images/FireBoyWaterGirl1.jpg", path: "FBWG1", category: ["puzzle", "adventure", "multiplayer"], description: "Guide Fireboy and Watergirl through the temple!" }
+  ];
+
+  // State management
+  const state = {
+    favorites: JSON.parse(localStorage.getItem("agic_favorites")) || [],
+    currentView: "all",
+    featuredIndex: 0,
+    recentlyPlayed: JSON.parse(localStorage.getItem("agic_recentlyPlayed")) || [],
+    gameRatings: JSON.parse(localStorage.getItem("agic_ratings")) || {},
+    theme: localStorage.getItem("agic_theme") || "dark",
+    searchQuery: "",
+    gameCache: {}, // Cache for game URL checks
+    panicMode: false,
+    compactMode: false
+  };
+
+  // DOM elements
+  const gamesContainer = document.getElementById("gamesContainer");
+  const searchInput = document.getElementById("search");
+  const gameView = document.getElementById("game-view");
+  const gameFrame = document.getElementById("game-frame");
+  const gameTitle = document.getElementById("gameTitle");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+  const topBar = document.querySelector(".top-bar");
+  const gameLoading = document.getElementById("gameLoading");
+  const gamesSectionTitle = document.getElementById("gamesSectionTitle");
+  const gamesCount = document.getElementById("gamesCount");
+  const loadingMessage = document.getElementById("loadingMessage");
+  const shortcutsModal = document.getElementById("shortcutsModal");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const panicButton = document.getElementById("panicButton");
+  const panicIcon = document.getElementById("panicIcon");
+  const introScreen = document.getElementById("intro-screen");
+  const loadingScreen = document.getElementById("loading-screen");
+
+  // Initialize featured games
+  const featuredGames = [
+    games[4], // Five Nights at Freddy's 4
+    games[23], // Friday Night Funkin'
+    games[40], // Minecraft Classic
+    games[75], // Retro Bowl
+    games[100], // Among Us
+    games[120], // Minecraft 1.8.8
+    games[140], // Madalin Stunt Cars 2
+    games[160], // Friday Night Funkin' Hex
+    games[180], // 1v1 lol
+    games[200]  // Fireboy and Watergirl 1
+  ];
+
+  let featuredGame = featuredGames[0];
+  let featuredInterval;
+
+  // Loading messages
+  const loadingMessages = [
+    "Loading awesome games...",
+    "Preparing your gaming experience...",
+    "Almost there...",
+    "Fun incoming...",
+    "Getting things ready...",
+    "Loading pixels and polygons...",
+    "Preparing adventures...",
+    "Warming up the servers..."
+  ];
+
+  // Panic mode messages
+  const panicMessages = [
+    "Working on homework...",
+    "Researching educational content...",
+    "Studying for tests...",
+    "Reading important articles...",
+    "Calculating complex equations...",
+    "Writing an essay..."
+  ];
+
+  // Initialize page
+  function initPage() {
+    // Show intro screen first
+    introScreen.style.display = 'flex';
+    
+    // Start transition after 6 seconds
+    setTimeout(() => {
+      // Fade out intro
+      introScreen.classList.add('fade-out');
+      
+      // After fade out, show loading screen with fade in
+      setTimeout(() => {
+        introScreen.style.display = 'none';
+        loadingScreen.style.display = 'flex';
+        loadingScreen.classList.add('fade-in');
+        
+        // Set theme
+        document.documentElement.setAttribute('data-theme', state.theme);
+        updateThemeIcon();
+
+        // Set random loading message
+        const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+        loadingMessage.textContent = randomMessage;
+
+        // Setup featured game
+        updateFeaturedGame();
+
+        // Render games
+        showAllGames();
+
+        // Setup keyboard shortcuts
+        setupKeyboardShortcuts();
+
+        // Setup auto-rotate featured games
+        startFeaturedRotation();
+
+        // Check for compact mode based on window size
+        checkCompactMode();
+
+        // Hide loading screen after delay
+        setTimeout(() => {
+          loadingScreen.classList.remove('fade-in');
+          setTimeout(() => {
+            loadingScreen.style.display = "none";
+            document.getElementById("main-content").style.display = "block";
+          }, 1000);
+        }, 2200);
+      }, 1000);
+    }, 6000);
+  }
+
+  // Check if window is small enough for compact mode
+  function checkCompactMode() {
+    if (window.innerWidth < 800) {
+      document.body.classList.add('compact-mode');
+      state.compactMode = true;
+    } else {
+      document.body.classList.remove('compact-mode');
+      state.compactMode = false;
+    }
+  }
+
+  // Toggle panic mode
+  function togglePanicMode() {
+    state.panicMode = !state.panicMode;
+    
+    if (state.panicMode) {
+      // Show fake content
+      panicIcon.className = 'fas fa-eye';
+      panicButton.classList.add('active');
+      
+      // Change tab title
+      document.title = panicMessages[Math.floor(Math.random() * panicMessages.length)];
+      
+      // If game is open, close it
+      if (gameView.style.display === 'flex') {
+        closeGame();
+      }
+      
+      // Add a delay before showing the panic screen
+      setTimeout(() => {
+        document.getElementById('main-content').style.display = 'none';
+        
+        // Create panic screen
+        const panicScreen = document.createElement('div');
+        panicScreen.id = 'panic-screen';
+        panicScreen.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: white;
+          color: #333;
+          z-index: 9999;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          font-family: Arial, sans-serif;
+        `;
+        
+        panicScreen.innerHTML = `
+          <h1>${document.title}</h1>
+          <p>Press the panic button again to return to games</p>
+        `;
+        
+        document.body.appendChild(panicScreen);
+      }, 300);
+    } else {
+      // Return to normal
+      panicIcon.className = 'fas fa-eye-slash';
+      panicButton.classList.remove('active');
+      
+      // Restore original title
+      document.title = "Agic - Unblocked Games";
+      
+      // Remove panic screen if it exists
+      const panicScreen = document.getElementById('panic-screen');
+      if (panicScreen) {
+        panicScreen.remove();
+      }
+      
+      // Show main content
+      document.getElementById('main-content').style.display = 'block';
+    }
+  }
+
+  // Render games
+  function renderGames(list) {
+    list.sort((a, b) => a.name.localeCompare(b.name));
+    gamesContainer.innerHTML = "";
+
+    if (list.length === 0) {
+      gamesContainer.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-gamepad"></i>
+          <h3>No games found</h3>
+          <p>Try adjusting your filters or search query</p>
+        </div>
+      `;
+      return;
+    }
+
+    list.forEach(game => {
+      const div = document.createElement("div");
+      div.className = "game";
+      div.style.backgroundImage = `url('${game.image}')`;
+      div.setAttribute('aria-label', `Play ${game.name}`);
+      div.setAttribute('tabindex', '0');
+      div.onclick = () => openGame(game);
+      
+      // Game overlay
+      const overlay = document.createElement("div");
+      overlay.className = "game-overlay";
+      
+      const title = document.createElement("div");
+      title.className = "game-title";
+      title.textContent = game.name;
+      
+      const tags = document.createElement("div");
+      tags.className = "game-tags";
+      
+      if (game.category) {
+        game.category.slice(0, 2).forEach(cat => {
+          const tag = document.createElement("span");
+          tag.className = "game-tag";
+          tag.textContent = cat;
+          tags.appendChild(tag);
+        });
+      }
+      
+      overlay.appendChild(title);
+      overlay.appendChild(tags);
+      div.appendChild(overlay);
+
+      // Favorite button
+      const favBtn = document.createElement("button");
+      favBtn.className = "favorite-btn tooltip";
+      favBtn.innerHTML = "<i class='fas fa-star'></i>";
+      favBtn.setAttribute('data-tooltip', 'Click to favorite');
+      favBtn.setAttribute('aria-label', 'Toggle favorite');
+      
+      if (state.favorites.some(f => f.name === game.name)) {
+        favBtn.classList.add("favorited");
+        favBtn.setAttribute('data-tooltip', 'Click to unfavorite');
+      }
+      
+      favBtn.onclick = e => {
+        e.stopPropagation();
+        toggleFavorite(game, favBtn);
+      };
+      
+      div.appendChild(favBtn);
+      gamesContainer.appendChild(div);
+    });
+  }
+
+  // Toggle favorite
+  function toggleFavorite(game, btn) {
+    const index = state.favorites.findIndex(f => f.name === game.name);
+    const isFavoriting = index === -1;
+    
+    if (isFavoriting) {
+      state.favorites.push(game);
+    } else {
+      state.favorites.splice(index, 1);
+    }
+    
+    localStorage.setItem("agic_favorites", JSON.stringify(state.favorites));
+    
+    if (isFavoriting) {
+      btn.classList.add("favorited");
+      btn.setAttribute('data-tooltip', 'Click to unfavorite');
+      btn.style.animation = "pop 0.3s ease forwards";
+      btn.addEventListener("animationend", () => {
+        btn.style.animation = "";
+      }, { once: true });
+    } else {
+      btn.classList.remove("favorited");
+      btn.setAttribute('data-tooltip', 'Click to favorite');
+    }
+    
+    if (state.currentView === "favorites") {
+      showFavorites();
+    }
+  }
+
+  // Show all games
+  function showAllGames() {
+    state.currentView = "all";
+    renderGames(games);
+    gamesSectionTitle.textContent = "All Games";
+    gamesCount.textContent = `(${games.length})`;
+  }
+
+  // Show favorites
+  function showFavorites() {
+    state.currentView = "favorites";
+    const favoriteGames = games.filter(game => 
+      state.favorites.some(f => f.name === game.name)
+    );
+    renderGames(favoriteGames);
+    gamesSectionTitle.textContent = "Favorites";
+    gamesCount.textContent = `(${favoriteGames.length})`;
+  }
+
+  // Show random game
+  function showRandomGame() {
+    const randomIndex = Math.floor(Math.random() * games.length);
+    openGame(games[randomIndex]);
+  }
+
+  // Open game
+  async function openGame(game) {
+    if (game.link) {
+      launchGame(game.link, game.name);
+      return;
+    }
+
+    // Show loading spinner
+    gameLoading.style.display = "flex";
+    gameFrame.style.display = "none";
+
+    // Add to recently played
+    addToRecentlyPlayed(game);
+
+    // Check cache first
+    if (state.gameCache[game.name]) {
+      launchGame(state.gameCache[game.name], game.name);
+      return;
+    }
+
+    const activeBases = Object.values(BASE_URLS).filter(base => base.active).map(base => base.url);
+    
+    for (const base of activeBases) {
+      const fullUrl = base + game.path;
+      try {
+        const response = await fetch(fullUrl, { method: 'HEAD' });
+        if (response.ok) {
+          // Cache the working URL
+          state.gameCache[game.name] = fullUrl;
+          launchGame(fullUrl, game.name);
+          return;
+        }
+      } catch (e) {}
+    }
+    
+    alert(`Could not load "${game.name}"`);
+    gameLoading.style.display = "none";
+  }
+
+  // Launch game
+  function launchGame(url, title) {
+    gameFrame.src = url;
+    gameTitle.textContent = title;
+    gameView.style.display = "flex";
+    
+    // Hide loading spinner when game loads
+    gameFrame.onload = () => {
+      gameLoading.style.display = "none";
+      gameFrame.style.display = "block";
+      
+      // Try to request pointer lock after a short delay
+      setTimeout(() => {
+        try {
+          gameFrame.contentWindow.focus();
+          gameFrame.contentWindow.document.body.requestPointerLock();
+        } catch (e) {
+          // Some games might not support pointer lock
+          console.log("Pointer lock not supported or failed:", e);
+        }
+      }, 1000);
+    };
+  }
+
+  // Add to recently played
+  function addToRecentlyPlayed(game) {
+    // Remove if already in list
+    const index = state.recentlyPlayed.findIndex(g => g.name === game.name);
+    if (index !== -1) {
+      state.recentlyPlayed.splice(index, 1);
+    }
+    
+    // Add to beginning of list
+    state.recentlyPlayed.unshift(game);
+    
+    // Keep only last 10 games
+    if (state.recentlyPlayed.length > 10) {
+      state.recentlyPlayed = state.recentlyPlayed.slice(0, 10);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem("agic_recentlyPlayed", JSON.stringify(state.recentlyPlayed));
+  }
+
+  // Close game
+  function closeGame() {
+    gameView.style.display = "none";
+    gameFrame.src = "";
+    gameLoading.style.display = "none";
+    gameFrame.style.display = "block";
+    
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+    
+    fullscreenBtn.innerHTML = "<i class='fas fa-expand'></i>";
+    topBar.style.visibility = "visible";
+  }
+
+  // Toggle fullscreen
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      gameFrame.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  // Handle fullscreen change
+  document.addEventListener("fullscreenchange", () => {
+    const isFullscreen = document.fullscreenElement === gameFrame;
+    fullscreenBtn.innerHTML = isFullscreen ? "<i class='fas fa-compress'></i>" : "<i class='fas fa-expand'></i>";
+    topBar.style.visibility = isFullscreen ? "hidden" : "visible";
+    fullscreenBtn.style.visibility = "visible";
+    fullscreenBtn.style.position = isFullscreen ? "fixed" : "initial";
+    fullscreenBtn.nextElementSibling.style.visibility = "visible";
+  });
+
+  // Search functionality
+  searchInput.addEventListener("input", () => {
+    state.searchQuery = searchInput.value;
+    const filteredGames = games.filter(game => 
+      game.name.toLowerCase().includes(state.searchQuery.toLowerCase())
+    );
+    
+    if (state.currentView === "favorites") {
+      const favoriteFiltered = filteredGames.filter(game => 
+        state.favorites.some(f => f.name === game.name)
+      );
+      renderGames(favoriteFiltered);
+      gamesCount.textContent = `(${favoriteFiltered.length})`;
+    } else {
+      renderGames(filteredGames);
+      gamesCount.textContent = `(${filteredGames.length})`;
+    }
+  });
+
+  // Featured game rotation
+  function startFeaturedRotation() {
+    featuredInterval = setInterval(() => {
+      nextFeatured();
+    }, 8000); // Rotate every 8 seconds
+  }
+
+  function stopFeaturedRotation() {
+    clearInterval(featuredInterval);
+  }
+
+  function nextFeatured() {
+    state.featuredIndex = (state.featuredIndex + 1) % featuredGames.length;
+    updateFeaturedGame();
+  }
+
+  function previousFeatured() {
+    state.featuredIndex = (state.featuredIndex - 1 + featuredGames.length) % featuredGames.length;
+    updateFeaturedGame();
+  }
+
+  function updateFeaturedGame() {
+    featuredGame = featuredGames[state.featuredIndex];
+    document.getElementById("featuredContainer").style.backgroundImage = `url('${featuredGame.image}')`;
+    document.getElementById("featuredTitle").textContent = featuredGame.name;
+    document.getElementById("featuredDescription").textContent = featuredGame.description || "Click to play this amazing game!";
+  }
+
+  // Theme toggle
+  function toggleTheme() {
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', state.theme);
+    localStorage.setItem('agic_theme', state.theme);
+    updateThemeIcon();
+  }
+
+  function updateThemeIcon() {
+    const themeIcon = document.getElementById('themeIcon');
+    const mobileThemeIcon = document.getElementById('mobileThemeIcon');
+    
+    if (state.theme === 'dark') {
+      themeIcon.className = 'fas fa-moon';
+      mobileThemeIcon.className = 'fas fa-moon';
+    } else {
+      themeIcon.className = 'fas fa-sun';
+      mobileThemeIcon.className = 'fas fa-sun';
+    }
+  }
+
+  // Keyboard shortcuts
+  function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      // Esc to close game
+      if (e.key === 'Escape' && gameView.style.display === 'flex') {
+        closeGame();
+      }
+      
+      // F to toggle fullscreen
+      if (e.key === 'f' && gameView.style.display === 'flex') {
+        toggleFullscreen();
+      }
+      
+      // Ctrl+K to focus search
+      if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+      
+      // Ctrl+T to toggle theme
+      if (e.ctrlKey && e.key === 't') {
+        e.preventDefault();
+        toggleTheme();
+      }
+      
+      // Ctrl+S to show favorites
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        showFavorites();
+      }
+      
+      // P to toggle panic mode
+      if (e.key === 'p') {
+        e.preventDefault();
+        togglePanicMode();
+      }
+    });
+  }
+
+  // Mobile menu
+  function toggleMobileMenu() {
+    mobileMenu.classList.toggle('active');
+  }
+
+  // Shortcuts modal
+  function showShortcuts() {
+    shortcutsModal.style.display = 'flex';
+  }
+
+  function closeShortcuts() {
+    shortcutsModal.style.display = 'none';
+  }
+
+  // Close shortcuts modal when clicking outside
+  shortcutsModal.addEventListener('click', (e) => {
+    if (e.target === shortcutsModal) {
+      closeShortcuts();
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    checkCompactMode();
+  });
+</script>
+</body>
+</html>
