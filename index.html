@@ -930,6 +930,26 @@
       0% { background-position: -200px 0; }
       100% { background-position: calc(200px + 100%) 0; }
     }
+
+    /* Loading indicator for infinite scroll */
+    .load-more-indicator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: hsl(var(--muted-foreground));
+      grid-column: 1 / -1;
+    }
+
+    .load-more-spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid hsl(var(--muted));
+      border-top: 3px solid hsl(var(--primary));
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body onload="initPage()">
@@ -1324,7 +1344,8 @@
     gameCache: {}, // Cache for game URL checks
     compactMode: false,
     visibleGames: 24, // Number of games to show initially (reduced for bigger tiles)
-    loadedImages: new Set() // Track loaded images
+    loadedImages: new Set(), // Track loaded images
+    isLoadingMore: false // Track if more games are currently loading
   };
 
   // DOM elements cache
@@ -1408,7 +1429,9 @@
 
     // Setup event delegation for games container
     elements.gamesContainer.addEventListener('click', handleGameClick);
-    elements.gamesContainer.addEventListener('scroll', handleScroll);
+    
+    // Setup scroll event for infinite scroll - using window instead of container
+    window.addEventListener('scroll', handleWindowScroll);
 
     // Setup search with debouncing
     elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
@@ -1448,21 +1471,51 @@
   // Handle search input
   function handleSearch() {
     state.searchQuery = elements.searchInput.value.toLowerCase();
+    state.visibleGames = 24; // Reset visible games when searching
     renderGames();
   }
 
-  // Handle scroll for lazy loading
-  function handleScroll() {
-    if (elements.gamesContainer.scrollTop + elements.gamesContainer.clientHeight >= 
-        elements.gamesContainer.scrollHeight - 100) {
+  // Handle window scroll for infinite scroll
+  function handleWindowScroll() {
+    // Calculate scroll position relative to the document
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = window.innerHeight;
+    
+    // Check if we're near the bottom of the page
+    if (scrollTop + clientHeight >= scrollHeight - 200 && !state.isLoadingMore) {
       loadMoreGames();
     }
   }
 
   // Load more games for infinite scroll
   function loadMoreGames() {
-    state.visibleGames += 12; // Load fewer games since they're bigger
-    renderGames();
+    // Prevent multiple simultaneous loads
+    if (state.isLoadingMore) return;
+    
+    state.isLoadingMore = true;
+    
+    // Show loading indicator
+    showLoadingIndicator();
+    
+    // Simulate network delay for better UX
+    setTimeout(() => {
+      state.visibleGames += 12; // Load fewer games since they're bigger
+      renderGames();
+      state.isLoadingMore = false;
+    }, 300);
+  }
+
+  // Show loading indicator
+  function showLoadingIndicator() {
+    // Check if indicator already exists
+    let indicator = document.querySelector('.load-more-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.className = 'load-more-indicator';
+      indicator.innerHTML = '<div class="load-more-spinner"></div><span>Loading more games...</span>';
+      elements.gamesContainer.appendChild(indicator);
+    }
   }
 
   // Handle game click with event delegation
@@ -1605,10 +1658,7 @@
     if (gamesToShow.length > state.visibleGames) {
       const loadMoreIndicator = document.createElement("div");
       loadMoreIndicator.className = "load-more-indicator";
-      loadMoreIndicator.style.textAlign = "center";
-      loadMoreIndicator.style.padding = "10px";
-      loadMoreIndicator.style.color = "hsl(var(--muted-foreground))";
-      loadMoreIndicator.textContent = "Scroll down to load more games...";
+      loadMoreIndicator.innerHTML = '<div class="load-more-spinner"></div><span>Scroll down to load more games...</span>';
       elements.gamesContainer.appendChild(loadMoreIndicator);
     }
   }
