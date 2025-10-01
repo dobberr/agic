@@ -392,6 +392,23 @@
       gap: 15px;
       padding: 15px;
       justify-content: center;
+      max-height: 70vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) var(--bg-tertiary);
+    }
+
+    .games-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .games-container::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+    }
+
+    .games-container::-webkit-scrollbar-thumb {
+      background-color: var(--accent);
+      border-radius: 4px;
     }
 
     .game {
@@ -407,6 +424,7 @@
       transition: var(--transition);
       overflow: hidden;
       box-sizing: border-box;
+      background-color: var(--bg-tertiary);
     }
 
     .game:hover {
@@ -866,6 +884,19 @@
     .tooltip:hover::after {
       opacity: 1;
     }
+
+    /* Lazy loading placeholder */
+    .lazy-load {
+      background-color: var(--bg-tertiary);
+      background-image: linear-gradient(90deg, var(--bg-tertiary) 0px, var(--bg-secondary) 40px, var(--bg-tertiary) 80px);
+      background-size: 200px 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
   </style>
 </head>
 <body onload="initPage()">
@@ -895,9 +926,6 @@
     </button>
     <button onclick="showFavorites()" aria-label="Favorites">
       <i class="fas fa-star"></i> Favorites
-    </button>
-    <button onclick="showRandomGame()" aria-label="Random Game">
-      <i class="fas fa-random"></i> Random
     </button>
     <button onclick="showShortcuts()" aria-label="Keyboard Shortcuts">
       <i class="fas fa-keyboard"></i>
@@ -1257,24 +1285,31 @@
     theme: localStorage.getItem("agic_theme") || "dark",
     searchQuery: "",
     gameCache: {}, // Cache for game URL checks
-    compactMode: false
+    compactMode: false,
+    visibleGames: 30, // Number of games to show initially
+    loadedImages: new Set() // Track loaded images
   };
 
-  // DOM elements
-  const gamesContainer = document.getElementById("gamesContainer");
-  const searchInput = document.getElementById("search");
-  const gameView = document.getElementById("game-view");
-  const gameFrame = document.getElementById("game-frame");
-  const gameTitle = document.getElementById("gameTitle");
-  const fullscreenBtn = document.getElementById("fullscreenBtn");
-  const topBar = document.querySelector(".top-bar");
-  const gameLoading = document.getElementById("gameLoading");
-  const gamesSectionTitle = document.getElementById("gamesSectionTitle");
-  const gamesCount = document.getElementById("gamesCount");
-  const loadingMessage = document.getElementById("loadingMessage");
-  const shortcutsModal = document.getElementById("shortcutsModal");
-  const mobileMenu = document.getElementById("mobileMenu");
-  const loadingScreen = document.getElementById("loading-screen");
+  // DOM elements cache
+  const elements = {
+    gamesContainer: document.getElementById("gamesContainer"),
+    searchInput: document.getElementById("search"),
+    gameView: document.getElementById("game-view"),
+    gameFrame: document.getElementById("game-frame"),
+    gameTitle: document.getElementById("gameTitle"),
+    fullscreenBtn: document.getElementById("fullscreenBtn"),
+    topBar: document.querySelector(".top-bar"),
+    gameLoading: document.getElementById("gameLoading"),
+    gamesSectionTitle: document.getElementById("gamesSectionTitle"),
+    gamesCount: document.getElementById("gamesCount"),
+    loadingMessage: document.getElementById("loadingMessage"),
+    shortcutsModal: document.getElementById("shortcutsModal"),
+    mobileMenu: document.getElementById("mobileMenu"),
+    loadingScreen: document.getElementById("loading-screen"),
+    featuredContainer: document.getElementById("featuredContainer"),
+    featuredTitle: document.getElementById("featuredTitle"),
+    featuredDescription: document.getElementById("featuredDescription")
+  };
 
   // Initialize featured games
   const featuredGames = [
@@ -1292,6 +1327,7 @@
 
   let featuredGame = featuredGames[0];
   let featuredInterval;
+  let searchTimeout;
 
   // Loading messages
   const loadingMessages = [
@@ -1308,11 +1344,11 @@
   // Initialize page
   function initPage() {
     // Show loading screen
-    loadingScreen.style.display = 'flex';
+    elements.loadingScreen.style.display = 'flex';
     
     // Set random loading message
     const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-    loadingMessage.textContent = randomMessage;
+    elements.loadingMessage.textContent = randomMessage;
 
     // Setup featured game
     updateFeaturedGame();
@@ -1329,11 +1365,63 @@
     // Check for compact mode based on window size
     checkCompactMode();
 
+    // Setup event delegation for games container
+    elements.gamesContainer.addEventListener('click', handleGameClick);
+    elements.gamesContainer.addEventListener('scroll', handleScroll);
+
+    // Setup search with debouncing
+    elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
+
     // Hide loading screen after delay
     setTimeout(() => {
-      loadingScreen.style.display = "none";
+      elements.loadingScreen.style.display = "none";
       document.getElementById("main-content").style.display = "block";
     }, 2200);
+  }
+
+  // Debounce function for search
+  function debounce(func, wait) {
+    return function(...args) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
+  // Handle search input
+  function handleSearch() {
+    state.searchQuery = elements.searchInput.value.toLowerCase();
+    renderGames();
+  }
+
+  // Handle scroll for lazy loading
+  function handleScroll() {
+    if (elements.gamesContainer.scrollTop + elements.gamesContainer.clientHeight >= 
+        elements.gamesContainer.scrollHeight - 100) {
+      loadMoreGames();
+    }
+  }
+
+  // Load more games for infinite scroll
+  function loadMoreGames() {
+    state.visibleGames += 15;
+    renderGames();
+  }
+
+  // Handle game click with event delegation
+  function handleGameClick(e) {
+    const gameCard = e.target.closest('.game');
+    if (!gameCard) return;
+    
+    const gameName = gameCard.getAttribute('data-game-name');
+    const game = games.find(g => g.name === gameName);
+    
+    if (game) {
+      if (e.target.closest('.favorite-btn')) {
+        toggleFavorite(game, e.target.closest('.favorite-btn'));
+      } else {
+        openGame(game);
+      }
+    }
   }
 
   // Check if window is small enough for compact mode
@@ -1347,13 +1435,36 @@
     }
   }
 
-  // Render games
-  function renderGames(list) {
-    list.sort((a, b) => a.name.localeCompare(b.name));
-    gamesContainer.innerHTML = "";
-
-    if (list.length === 0) {
-      gamesContainer.innerHTML = `
+  // Render games with virtual scrolling
+  function renderGames() {
+    let gamesToShow = games;
+    
+    // Filter by search query
+    if (state.searchQuery) {
+      gamesToShow = games.filter(game => 
+        game.name.toLowerCase().includes(state.searchQuery)
+      );
+    }
+    
+    // Filter by favorites if needed
+    if (state.currentView === "favorites") {
+      gamesToShow = gamesToShow.filter(game => 
+        state.favorites.some(f => f.name === game.name)
+      );
+    }
+    
+    // Sort games alphabetically
+    gamesToShow.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Update section title and count
+    elements.gamesSectionTitle.textContent = state.currentView === "favorites" ? "Favorites" : "All Games";
+    elements.gamesCount.textContent = `(${gamesToShow.length})`;
+    
+    // Clear container
+    elements.gamesContainer.innerHTML = "";
+    
+    if (gamesToShow.length === 0) {
+      elements.gamesContainer.innerHTML = `
         <div class="empty-state">
           <i class="fas fa-gamepad"></i>
           <h3>No games found</h3>
@@ -1362,14 +1473,33 @@
       `;
       return;
     }
-
-    list.forEach(game => {
+    
+    // Create document fragment for better performance
+    const fragment = document.createDocumentFragment();
+    
+    // Limit visible games for performance
+    const gamesToRender = gamesToShow.slice(0, state.visibleGames);
+    
+    gamesToRender.forEach(game => {
       const div = document.createElement("div");
       div.className = "game";
-      div.style.backgroundImage = `url('${game.image}')`;
+      div.setAttribute('data-game-name', game.name);
       div.setAttribute('aria-label', `Play ${game.name}`);
       div.setAttribute('tabindex', '0');
-      div.onclick = () => openGame(game);
+      
+      // Use lazy loading for images
+      if (state.loadedImages.has(game.image)) {
+        div.style.backgroundImage = `url('${game.image}')`;
+      } else {
+        div.classList.add('lazy-load');
+        const img = new Image();
+        img.onload = function() {
+          div.style.backgroundImage = `url('${game.image}')`;
+          div.classList.remove('lazy-load');
+          state.loadedImages.add(game.image);
+        };
+        img.src = game.image;
+      }
       
       // Game overlay
       const overlay = document.createElement("div");
@@ -1407,14 +1537,22 @@
         favBtn.setAttribute('data-tooltip', 'Click to unfavorite');
       }
       
-      favBtn.onclick = e => {
-        e.stopPropagation();
-        toggleFavorite(game, favBtn);
-      };
-      
       div.appendChild(favBtn);
-      gamesContainer.appendChild(div);
+      fragment.appendChild(div);
     });
+    
+    elements.gamesContainer.appendChild(fragment);
+    
+    // Show load more indicator if there are more games
+    if (gamesToShow.length > state.visibleGames) {
+      const loadMoreIndicator = document.createElement("div");
+      loadMoreIndicator.className = "load-more-indicator";
+      loadMoreIndicator.style.textAlign = "center";
+      loadMoreIndicator.style.padding = "10px";
+      loadMoreIndicator.style.color = "var(--text-secondary)";
+      loadMoreIndicator.textContent = "Scroll down to load more games...";
+      elements.gamesContainer.appendChild(loadMoreIndicator);
+    }
   }
 
   // Toggle favorite
@@ -1443,27 +1581,22 @@
     }
     
     if (state.currentView === "favorites") {
-      showFavorites();
+      renderGames();
     }
   }
 
   // Show all games
   function showAllGames() {
     state.currentView = "all";
-    renderGames(games);
-    gamesSectionTitle.textContent = "All Games";
-    gamesCount.textContent = `(${games.length})`;
+    state.visibleGames = 30; // Reset visible games count
+    renderGames();
   }
 
   // Show favorites
   function showFavorites() {
     state.currentView = "favorites";
-    const favoriteGames = games.filter(game => 
-      state.favorites.some(f => f.name === game.name)
-    );
-    renderGames(favoriteGames);
-    gamesSectionTitle.textContent = "Favorites";
-    gamesCount.textContent = `(${favoriteGames.length})`;
+    state.visibleGames = 30; // Reset visible games count
+    renderGames();
   }
 
   // Show random game
@@ -1472,7 +1605,7 @@
     openGame(games[randomIndex]);
   }
 
-  // Open game
+  // Open game with optimized loading
   async function openGame(game) {
     if (game.link) {
       launchGame(game.link, game.name);
@@ -1480,8 +1613,8 @@
     }
 
     // Show loading spinner
-    gameLoading.style.display = "flex";
-    gameFrame.style.display = "none";
+    elements.gameLoading.style.display = "flex";
+    elements.gameFrame.style.display = "none";
 
     // Add to recently played
     addToRecentlyPlayed(game);
@@ -1494,39 +1627,51 @@
 
     const activeBases = Object.values(BASE_URLS).filter(base => base.active).map(base => base.url);
     
-    for (const base of activeBases) {
-      const fullUrl = base + game.path;
-      try {
-        const response = await fetch(fullUrl, { method: 'HEAD' });
-        if (response.ok) {
-          // Cache the working URL
-          state.gameCache[game.name] = fullUrl;
-          launchGame(fullUrl, game.name);
-          return;
-        }
-      } catch (e) {}
-    }
+    // Try to load game with timeout
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Timeout')), 5000)
+    );
     
-    alert(`Could not load "${game.name}"`);
-    gameLoading.style.display = "none";
+    const gameLoadPromise = (async () => {
+      for (const base of activeBases) {
+        const fullUrl = base + game.path;
+        try {
+          const response = await fetch(fullUrl, { method: 'HEAD' });
+          if (response.ok) {
+            // Cache the working URL
+            state.gameCache[game.name] = fullUrl;
+            return fullUrl;
+          }
+        } catch (e) {}
+      }
+      throw new Error('Game not found');
+    })();
+    
+    try {
+      const url = await Promise.race([gameLoadPromise, timeoutPromise]);
+      launchGame(url, game.name);
+    } catch (e) {
+      alert(`Could not load "${game.name}"`);
+      elements.gameLoading.style.display = "none";
+    }
   }
 
   // Launch game
   function launchGame(url, title) {
-    gameFrame.src = url;
-    gameTitle.textContent = title;
-    gameView.style.display = "flex";
+    elements.gameFrame.src = url;
+    elements.gameTitle.textContent = title;
+    elements.gameView.style.display = "flex";
     
     // Hide loading spinner when game loads
-    gameFrame.onload = () => {
-      gameLoading.style.display = "none";
-      gameFrame.style.display = "block";
+    elements.gameFrame.onload = () => {
+      elements.gameLoading.style.display = "none";
+      elements.gameFrame.style.display = "block";
       
       // Try to request pointer lock after a short delay
       setTimeout(() => {
         try {
-          gameFrame.contentWindow.focus();
-          gameFrame.contentWindow.document.body.requestPointerLock();
+          elements.gameFrame.contentWindow.focus();
+          elements.gameFrame.contentWindow.document.body.requestPointerLock();
         } catch (e) {
           // Some games might not support pointer lock
           console.log("Pointer lock not supported or failed:", e);
@@ -1557,23 +1702,23 @@
 
   // Close game
   function closeGame() {
-    gameView.style.display = "none";
-    gameFrame.src = "";
-    gameLoading.style.display = "none";
-    gameFrame.style.display = "block";
+    elements.gameView.style.display = "none";
+    elements.gameFrame.src = "";
+    elements.gameLoading.style.display = "none";
+    elements.gameFrame.style.display = "block";
     
     if (document.fullscreenElement) {
       document.exitFullscreen();
     }
     
-    fullscreenBtn.innerHTML = "<i class='fas fa-expand'></i>";
-    topBar.style.visibility = "visible";
+    elements.fullscreenBtn.innerHTML = "<i class='fas fa-expand'></i>";
+    elements.topBar.style.visibility = "visible";
   }
 
   // Toggle fullscreen
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
-      gameFrame.requestFullscreen();
+      elements.gameFrame.requestFullscreen();
     } else {
       document.exitFullscreen();
     }
@@ -1581,35 +1726,21 @@
 
   // Handle fullscreen change
   document.addEventListener("fullscreenchange", () => {
-    const isFullscreen = document.fullscreenElement === gameFrame;
-    fullscreenBtn.innerHTML = isFullscreen ? "<i class='fas fa-compress'></i>" : "<i class='fas fa-expand'></i>";
-    topBar.style.visibility = isFullscreen ? "hidden" : "visible";
-    fullscreenBtn.style.visibility = "visible";
-    fullscreenBtn.style.position = isFullscreen ? "fixed" : "initial";
-    fullscreenBtn.nextElementSibling.style.visibility = "visible";
+    const isFullscreen = document.fullscreenElement === elements.gameFrame;
+    elements.fullscreenBtn.innerHTML = isFullscreen ? "<i class='fas fa-compress'></i>" : "<i class='fas fa-expand'></i>";
+    elements.topBar.style.visibility = isFullscreen ? "hidden" : "visible";
+    elements.fullscreenBtn.style.visibility = "visible";
+    elements.fullscreenBtn.nextElementSibling.style.visibility = "visible";
   });
 
-  // Search functionality
-  searchInput.addEventListener("input", () => {
-    state.searchQuery = searchInput.value;
-    const filteredGames = games.filter(game => 
-      game.name.toLowerCase().includes(state.searchQuery.toLowerCase())
-    );
-    
-    if (state.currentView === "favorites") {
-      const favoriteFiltered = filteredGames.filter(game => 
-        state.favorites.some(f => f.name === game.name)
-      );
-      renderGames(favoriteFiltered);
-      gamesCount.textContent = `(${favoriteFiltered.length})`;
-    } else {
-      renderGames(filteredGames);
-      gamesCount.textContent = `(${filteredGames.length})`;
-    }
-  });
-
-  // Featured game rotation
+  // Featured game rotation with optimization
   function startFeaturedRotation() {
+    // Preload featured game images
+    featuredGames.forEach(game => {
+      const img = new Image();
+      img.src = game.image;
+    });
+    
     featuredInterval = setInterval(() => {
       nextFeatured();
     }, 8000); // Rotate every 8 seconds
@@ -1631,9 +1762,9 @@
 
   function updateFeaturedGame() {
     featuredGame = featuredGames[state.featuredIndex];
-    document.getElementById("featuredContainer").style.backgroundImage = `url('${featuredGame.image}')`;
-    document.getElementById("featuredTitle").textContent = featuredGame.name;
-    document.getElementById("featuredDescription").textContent = featuredGame.description || "Click to play this amazing game!";
+    elements.featuredContainer.style.backgroundImage = `url('${featuredGame.image}')`;
+    elements.featuredTitle.textContent = featuredGame.name;
+    elements.featuredDescription.textContent = featuredGame.description || "Click to play this amazing game!";
   }
 
   // Theme toggle
@@ -1661,19 +1792,19 @@
   function setupKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
       // Esc to close game
-      if (e.key === 'Escape' && gameView.style.display === 'flex') {
+      if (e.key === 'Escape' && elements.gameView.style.display === 'flex') {
         closeGame();
       }
       
       // F to toggle fullscreen
-      if (e.key === 'f' && gameView.style.display === 'flex') {
+      if (e.key === 'f' && elements.gameView.style.display === 'flex') {
         toggleFullscreen();
       }
       
       // Ctrl+K to focus search
       if (e.ctrlKey && e.key === 'k') {
         e.preventDefault();
-        searchInput.focus();
+        elements.searchInput.focus();
       }
       
       // Ctrl+T to toggle theme
@@ -1698,21 +1829,21 @@
 
   // Mobile menu
   function toggleMobileMenu() {
-    mobileMenu.classList.toggle('active');
+    elements.mobileMenu.classList.toggle('active');
   }
 
   // Shortcuts modal
   function showShortcuts() {
-    shortcutsModal.style.display = 'flex';
+    elements.shortcutsModal.style.display = 'flex';
   }
 
   function closeShortcuts() {
-    shortcutsModal.style.display = 'none';
+    elements.shortcutsModal.style.display = 'none';
   }
 
   // Close shortcuts modal when clicking outside
-  shortcutsModal.addEventListener('click', (e) => {
-    if (e.target === shortcutsModal) {
+  elements.shortcutsModal.addEventListener('click', (e) => {
+    if (e.target === elements.shortcutsModal) {
       closeShortcuts();
     }
   });
