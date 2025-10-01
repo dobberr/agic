@@ -396,17 +396,23 @@
       transform: translateY(-1px);
     }
 
-    /* Games Grid */
+    /* Games Container */
+    .games-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
     .games-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
       padding: 20px;
       justify-content: center;
-      max-height: 70vh;
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+      flex: 1;
     }
 
     .games-container::-webkit-scrollbar {
@@ -1008,11 +1014,13 @@
   </div>
 </div>
 
-<div class="section-label">
-  <span id="gamesSectionTitle">All Games</span>
-  <span id="gamesCount" style="font-size: 14px; color: hsl(var(--muted-foreground));"></span>
+<div class="games-wrapper">
+  <div class="section-label">
+    <span id="gamesSectionTitle">All Games</span>
+    <span id="gamesCount" style="font-size: 14px; color: hsl(var(--muted-foreground));"></span>
+  </div>
+  <div class="games-container" id="gamesContainer"></div>
 </div>
-<div class="games-container" id="gamesContainer"></div>
 
 <div id="game-view">
   <div class="top-bar">
