@@ -95,12 +95,7 @@
       width: 0%;
       border-radius: 9999px;
       position: relative;
-      animation: loadAnim 2.2s ease-out forwards, shimmer 1.5s infinite;
-    }
-
-    @keyframes loadAnim {
-      0% { width: 0%; }
-      100% { width: 100%; }
+      animation: shimmer 1.5s infinite;
     }
 
     @keyframes shimmer {
@@ -952,12 +947,12 @@
     }
   </style>
 </head>
-<body onload="initPage()">
+<body>
 <div id="loading-screen">
   <img src="Images/AgicLogoNoBg.png" class="loading-logo" alt="Agic Logo" />
   <div class="loading-message" id="loadingMessage">Loading awesome games...</div>
   <div class="loading-bar">
-    <div class="loading-progress"></div>
+    <div class="loading-progress" id="loadingProgress"></div>
   </div>
   <div class="loading-percentage" id="loadingPercentage">0%</div>
 </div>
@@ -1368,7 +1363,8 @@
     featuredContainer: document.getElementById("featuredContainer"),
     featuredTitle: document.getElementById("featuredTitle"),
     featuredDescription: document.getElementById("featuredDescription"),
-    loadingPercentage: document.getElementById("loadingPercentage")
+    loadingPercentage: document.getElementById("loadingPercentage"),
+    loadingProgress: document.getElementById("loadingProgress")
   };
 
   // Initialize featured games
@@ -1409,38 +1405,39 @@
     const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
     elements.loadingMessage.textContent = randomMessage;
 
-    // Animate loading percentage
+    // Start loading animation
     animateLoadingPercentage();
-
-    // Setup featured game
-    updateFeaturedGame();
-
-    // Render games
-    showAllGames();
-
-    // Setup keyboard shortcuts
-    setupKeyboardShortcuts();
-
-    // Setup auto-rotate featured games
-    startFeaturedRotation();
-
-    // Check for compact mode based on window size
-    checkCompactMode();
-
-    // Setup event delegation for games container
-    elements.gamesContainer.addEventListener('click', handleGameClick);
     
-    // Setup scroll event for infinite scroll - using window instead of container
-    window.addEventListener('scroll', handleWindowScroll);
-
-    // Setup search with debouncing
-    elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
-
-    // Hide loading screen after delay
+    // Initialize everything after a short delay
     setTimeout(() => {
+      // Setup featured game
+      updateFeaturedGame();
+
+      // Render games
+      showAllGames();
+
+      // Setup keyboard shortcuts
+      setupKeyboardShortcuts();
+
+      // Setup auto-rotate featured games
+      startFeaturedRotation();
+
+      // Check for compact mode based on window size
+      checkCompactMode();
+
+      // Setup event delegation for games container
+      elements.gamesContainer.addEventListener('click', handleGameClick);
+      
+      // Setup scroll event for infinite scroll - using window instead of container
+      window.addEventListener('scroll', handleWindowScroll);
+
+      // Setup search with debouncing
+      elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
+      
+      // Hide loading screen
       elements.loadingScreen.style.display = "none";
       document.getElementById("main-content").style.display = "block";
-    }, 2200);
+    }, 2000);
   }
 
   // Animate loading percentage
@@ -1456,6 +1453,7 @@
         percentage = targetPercentage;
         clearInterval(interval);
       }
+      elements.loadingProgress.style.width = `${percentage}%`;
       elements.loadingPercentage.textContent = Math.floor(percentage) + '%';
     }, 50);
   }
@@ -1497,6 +1495,16 @@
     
     // Show loading indicator
     showLoadingIndicator();
+    
+    // Preload next batch of images
+    const nextBatch = games.slice(state.visibleGames, state.visibleGames + 12);
+    nextBatch.forEach(game => {
+      if (!state.loadedImages.has(game.image)) {
+        const img = new Image();
+        img.src = game.image;
+        img.onload = () => state.loadedImages.add(game.image);
+      }
+    });
     
     // Simulate network delay for better UX
     setTimeout(() => {
@@ -1964,6 +1972,9 @@
   window.addEventListener('resize', () => {
     checkCompactMode();
   });
+
+  // Initialize the page when the DOM is loaded
+  document.addEventListener('DOMContentLoaded', initPage);
 </script>
 </body>
 </html>
