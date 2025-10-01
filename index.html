@@ -55,270 +55,17 @@
       transition: var(--transition);
     }
 
-    /* Intro Screen */
-    #intro-screen {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      overflow: hidden;
-      transition: opacity 1s ease-out;
-    }
-
-    #intro-screen.fade-out {
-      opacity: 0;
-    }
-
-    .intro-content {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-    }
-
-    .dobberrated-container {
-      position: relative;
-      margin-bottom: 80px;
-      overflow: hidden;
-    }
-
-    .dobberrated {
-      font-size: 80px;
-      font-weight: 900;
-      letter-spacing: 8px;
-      text-transform: uppercase;
-      position: relative;
-      color: #fff;
-      text-shadow: 
-        0 0 10px #ff00ff,
-        0 0 20px #ff00ff,
-        0 0 30px #ff00ff,
-        0 0 40px #ff00ff;
-      animation: glitch 2s infinite;
-    }
-
-    .dobberrated::before,
-    .dobberrated::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .dobberrated::before {
-      animation: glitch-1 0.5s infinite;
-      color: #00ffff;
-      z-index: -1;
-      clip-path: inset(0 0 0 0);
-    }
-
-    .dobberrated::after {
-      animation: glitch-2 0.5s infinite;
-      color: #ff00ff;
-      z-index: -2;
-      clip-path: inset(0 0 0 0);
-    }
-
-    .dobberrated-scanner {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, #00ffff, transparent);
-      animation: scanner 3s linear infinite;
-    }
-
-    .dobberrated-slice {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      animation: slice 4s infinite;
-    }
-
-    .fluxis-container {
-      position: relative;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeInUp 2s forwards;
-      animation-delay: 2.5s;
-      margin-bottom: 60px;
-    }
-
-    .fluxis {
-      max-width: 450px;
-      height: auto;
-      filter: drop-shadow(0 0 30px rgba(147, 51, 234, 0.8));
-    }
-
-    .fluxis-glow {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, transparent 70%);
-      animation: pulse 2s infinite;
-    }
-
-    .intro-presents {
-      font-size: 24px;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: fadeIn 1.5s forwards;
-      animation-delay: 4s;
-      font-weight: 300;
-      text-align: center;
-    }
-
-    @keyframes glitch {
-      0%, 100% {
-        text-shadow: 
-          0 0 10px #ff00ff,
-          0 0 20px #ff00ff,
-          0 0 30px #ff00ff,
-          0 0 40px #ff00ff;
-      }
-      25% {
-        text-shadow: 
-          -2px 0 #00ffff,
-          2px 0 #ff00ff,
-          0 0 10px #00ffff,
-          0 0 20px #00ffff;
-      }
-      50% {
-        text-shadow: 
-          2px 0 #ff00ff,
-          -2px 0 #00ffff,
-          0 0 15px #ff00ff,
-          0 0 25px #ff00ff;
-      }
-      75% {
-        text-shadow: 
-          0 0 5px #fff,
-          0 0 10px #fff,
-          0 0 15px #fff,
-          0 0 20px #fff;
-      }
-    }
-
-    @keyframes glitch-1 {
-      0%, 100% {
-        transform: translate(0);
-        clip-path: inset(0 0 0 0);
-      }
-      20% {
-        transform: translate(-2px, 2px);
-        clip-path: inset(20% 0 30% 0);
-      }
-      40% {
-        transform: translate(2px, -2px);
-        clip-path: inset(50% 0 20% 0);
-      }
-      60% {
-        transform: translate(-1px, 1px);
-        clip-path: inset(10% 0 60% 0);
-      }
-      80% {
-        transform: translate(1px, -1px);
-        clip-path: inset(70% 0 10% 0);
-      }
-    }
-
-    @keyframes glitch-2 {
-      0%, 100% {
-        transform: translate(0);
-        clip-path: inset(0 0 0 0);
-      }
-      20% {
-        transform: translate(2px, -1px);
-        clip-path: inset(60% 0 10% 0);
-      }
-      40% {
-        transform: translate(-2px, 1px);
-        clip-path: inset(10% 0 70% 0);
-      }
-      60% {
-        transform: translate(1px, 2px);
-        clip-path: inset(40% 0 30% 0);
-      }
-      80% {
-        transform: translate(-1px, -2px);
-        clip-path: inset(25% 0 50% 0);
-      }
-    }
-
-    @keyframes scanner {
-      0% {
-        top: 0;
-      }
-      100% {
-        top: 100%;
-      }
-    }
-
-    @keyframes slice {
-      0%, 100% {
-        transform: translateY(-100%);
-      }
-      50% {
-        transform: translateY(100%);
-      }
-    }
-
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        opacity: 0.4;
-      }
-      50% {
-        opacity: 0.7;
-      }
-    }
-
     /* Loading Screen */
     #loading-screen {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: var(--bg-primary);
-      display: none;
+      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
       backdrop-filter: blur(10px);
-      opacity: 0;
-      transition: opacity 1s ease-in;
-    }
-
-    #loading-screen.fade-in {
-      opacity: 1;
     }
 
     .loading-logo {
@@ -388,14 +135,14 @@
       to { opacity: 1; }
     }
 
-    /* Panic Button */
-    .panic-button {
+    /* Random Game Button */
+    .random-button {
       position: fixed;
       bottom: 20px;
       right: 20px;
       width: 50px;
       height: 50px;
-      background: rgba(220, 38, 38, 0.8);
+      background: var(--accent);
       color: white;
       border: none;
       border-radius: 50%;
@@ -408,17 +155,9 @@
       box-shadow: var(--shadow);
     }
 
-    .panic-button:hover {
-      background: rgba(220, 38, 38, 1);
+    .random-button:hover {
+      background: var(--accent-hover);
       transform: scale(1.1);
-    }
-
-    .panic-button.active {
-      background: rgba(34, 197, 94, 0.8);
-    }
-
-    .panic-button.active:hover {
-      background: rgba(34, 197, 94, 1);
     }
 
     /* Header */
@@ -1130,22 +869,6 @@
   </style>
 </head>
 <body onload="initPage()">
-<!-- Intro Screen -->
-<div id="intro-screen">
-  <div class="intro-content">
-    <div class="dobberrated-container">
-      <div class="dobberrated" data-text="DOBBERRATED">DOBBERRATED</div>
-      <div class="dobberrated-scanner"></div>
-      <div class="dobberrated-slice"></div>
-    </div>
-    <div class="fluxis-container">
-      <div class="fluxis-glow"></div>
-      <img src="Fluxis.png" class="fluxis" alt="Fluxis" />
-    </div>
-    <div class="intro-presents">DOBBERRATED & FLUXIS PRESENT</div>
-  </div>
-</div>
-
 <div id="loading-screen">
   <img src="Images/AgicLogoNoBg.png" class="loading-logo" alt="Agic Logo" />
   <div class="loading-spinner"></div>
@@ -1156,8 +879,8 @@
 </div>
 
 <div id="main-content">
-<button class="panic-button" id="panicButton" onclick="togglePanicMode()" title="Press to quickly hide/show">
-  <i class="fas fa-eye-slash" id="panicIcon"></i>
+<button class="random-button" id="randomButton" onclick="showRandomGame()" title="Random Game">
+  <i class="fas fa-random"></i>
 </button>
 
 <header>
@@ -1285,40 +1008,14 @@
       <span class="shortcut-key">Ctrl + S</span>
     </div>
     <div class="shortcut-item">
-      <span>Panic Mode</span>
-      <span class="shortcut-key">P</span>
+      <span>Random Game</span>
+      <span class="shortcut-key">R</span>
     </div>
   </div>
 </div>
 </div>
 
 <script>
-  // Glitch effect for Dobberrated text
-  function initGlitchEffect() {
-    const dobberrated = document.querySelector('.dobberrated');
-    const originalText = dobberrated.textContent;
-    
-    setInterval(() => {
-      if (Math.random() > 0.9) {
-        const glitchText = originalText.split('').map(char => {
-          if (Math.random() > 0.5) {
-            return String.fromCharCode(Math.floor(Math.random() * 128));
-          }
-          return char;
-        }).join('');
-        
-        dobberrated.textContent = glitchText;
-        
-        setTimeout(() => {
-          dobberrated.textContent = originalText;
-        }, 100);
-      }
-    }, 200);
-  }
-  
-  // Initialize glitch effect
-  initGlitchEffect();
-
   // Configuration
   const BASE_URLS = {
     base1: { url: "https://a7k9-lq2d-v8r1-zx0c-mb6p-tn4g-wy3e-ju5h.github.io/AgicFiles384207-1/", active: true },
@@ -1560,7 +1257,6 @@
     theme: localStorage.getItem("agic_theme") || "dark",
     searchQuery: "",
     gameCache: {}, // Cache for game URL checks
-    panicMode: false,
     compactMode: false
   };
 
@@ -1578,9 +1274,6 @@
   const loadingMessage = document.getElementById("loadingMessage");
   const shortcutsModal = document.getElementById("shortcutsModal");
   const mobileMenu = document.getElementById("mobileMenu");
-  const panicButton = document.getElementById("panicButton");
-  const panicIcon = document.getElementById("panicIcon");
-  const introScreen = document.getElementById("intro-screen");
   const loadingScreen = document.getElementById("loading-screen");
 
   // Initialize featured games
@@ -1612,65 +1305,35 @@
     "Warming up the servers..."
   ];
 
-  // Panic mode messages
-  const panicMessages = [
-    "Working on homework...",
-    "Researching educational content...",
-    "Studying for tests...",
-    "Reading important articles...",
-    "Calculating complex equations...",
-    "Writing an essay..."
-  ];
-
   // Initialize page
   function initPage() {
-    // Show intro screen first
-    introScreen.style.display = 'flex';
+    // Show loading screen
+    loadingScreen.style.display = 'flex';
     
-    // Start transition after 6 seconds
+    // Set random loading message
+    const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+    loadingMessage.textContent = randomMessage;
+
+    // Setup featured game
+    updateFeaturedGame();
+
+    // Render games
+    showAllGames();
+
+    // Setup keyboard shortcuts
+    setupKeyboardShortcuts();
+
+    // Setup auto-rotate featured games
+    startFeaturedRotation();
+
+    // Check for compact mode based on window size
+    checkCompactMode();
+
+    // Hide loading screen after delay
     setTimeout(() => {
-      // Fade out intro
-      introScreen.classList.add('fade-out');
-      
-      // After fade out, show loading screen with fade in
-      setTimeout(() => {
-        introScreen.style.display = 'none';
-        loadingScreen.style.display = 'flex';
-        loadingScreen.classList.add('fade-in');
-        
-        // Set theme
-        document.documentElement.setAttribute('data-theme', state.theme);
-        updateThemeIcon();
-
-        // Set random loading message
-        const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-        loadingMessage.textContent = randomMessage;
-
-        // Setup featured game
-        updateFeaturedGame();
-
-        // Render games
-        showAllGames();
-
-        // Setup keyboard shortcuts
-        setupKeyboardShortcuts();
-
-        // Setup auto-rotate featured games
-        startFeaturedRotation();
-
-        // Check for compact mode based on window size
-        checkCompactMode();
-
-        // Hide loading screen after delay
-        setTimeout(() => {
-          loadingScreen.classList.remove('fade-in');
-          setTimeout(() => {
-            loadingScreen.style.display = "none";
-            document.getElementById("main-content").style.display = "block";
-          }, 1000);
-        }, 2200);
-      }, 1000);
-    }, 6000);
+      loadingScreen.style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+    }, 2200);
   }
 
   // Check if window is small enough for compact mode
@@ -1681,72 +1344,6 @@
     } else {
       document.body.classList.remove('compact-mode');
       state.compactMode = false;
-    }
-  }
-
-  // Toggle panic mode
-  function togglePanicMode() {
-    state.panicMode = !state.panicMode;
-    
-    if (state.panicMode) {
-      // Show fake content
-      panicIcon.className = 'fas fa-eye';
-      panicButton.classList.add('active');
-      
-      // Change tab title
-      document.title = panicMessages[Math.floor(Math.random() * panicMessages.length)];
-      
-      // If game is open, close it
-      if (gameView.style.display === 'flex') {
-        closeGame();
-      }
-      
-      // Add a delay before showing the panic screen
-      setTimeout(() => {
-        document.getElementById('main-content').style.display = 'none';
-        
-        // Create panic screen
-        const panicScreen = document.createElement('div');
-        panicScreen.id = 'panic-screen';
-        panicScreen.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: white;
-          color: #333;
-          z-index: 9999;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          font-family: Arial, sans-serif;
-        `;
-        
-        panicScreen.innerHTML = `
-          <h1>${document.title}</h1>
-          <p>Press the panic button again to return to games</p>
-        `;
-        
-        document.body.appendChild(panicScreen);
-      }, 300);
-    } else {
-      // Return to normal
-      panicIcon.className = 'fas fa-eye-slash';
-      panicButton.classList.remove('active');
-      
-      // Restore original title
-      document.title = "Agic - Unblocked Games";
-      
-      // Remove panic screen if it exists
-      const panicScreen = document.getElementById('panic-screen');
-      if (panicScreen) {
-        panicScreen.remove();
-      }
-      
-      // Show main content
-      document.getElementById('main-content').style.display = 'block';
     }
   }
 
@@ -2091,10 +1688,10 @@
         showFavorites();
       }
       
-      // P to toggle panic mode
-      if (e.key === 'p') {
+      // R to open random game
+      if (e.key === 'r') {
         e.preventDefault();
-        togglePanicMode();
+        showRandomGame();
       }
     });
   }
