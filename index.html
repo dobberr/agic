@@ -299,6 +299,10 @@
     }
 
     /* Featured Section */
+    .featured-section {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
     .section-label {
       font-weight: 600;
       font-size: 20px;
@@ -983,22 +987,24 @@
   </div>
 </div>
 
-<div class="section-label">
-  <span>Featured Games</span>
-  <div class="featured-controls">
-    <button class="featured-btn" onclick="previousFeatured()" aria-label="Previous Featured">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="featured-btn" onclick="nextFeatured()" aria-label="Next Featured">
-      <i class="fas fa-chevron-right"></i>
-    </button>
+<div class="featured-section" id="featuredSection">
+  <div class="section-label">
+    <span>Featured Games</span>
+    <div class="featured-controls">
+      <button class="featured-btn" onclick="previousFeatured()" aria-label="Previous Featured">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="featured-btn" onclick="nextFeatured()" aria-label="Next Featured">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </div>
-</div>
-<div class="featured-container" id="featuredContainer">
-  <div class="featured-overlay">
-    <div class="featured-title" id="featuredTitle"></div>
-    <div class="featured-description" id="featuredDescription"></div>
-    <button class="featured-button" onclick="openGame(featuredGame)">Play Now</button>
+  <div class="featured-container" id="featuredContainer">
+    <div class="featured-overlay">
+      <div class="featured-title" id="featuredTitle"></div>
+      <div class="featured-description" id="featuredDescription"></div>
+      <button class="featured-button" onclick="openGame(featuredGame)">Play Now</button>
+    </div>
   </div>
 </div>
 
@@ -1329,6 +1335,7 @@
     shortcutsModal: document.getElementById("shortcutsModal"),
     mobileMenu: document.getElementById("mobileMenu"),
     loadingScreen: document.getElementById("loading-screen"),
+    featuredSection: document.getElementById("featuredSection"),
     featuredContainer: document.getElementById("featuredContainer"),
     featuredTitle: document.getElementById("featuredTitle"),
     featuredDescription: document.getElementById("featuredDescription"),
@@ -1633,6 +1640,8 @@
     state.currentView = "all";
     state.visibleGames = 24; // Reset visible games count
     renderGames();
+    // Show featured section when viewing all games
+    elements.featuredSection.style.display = 'block';
   }
 
   // Show favorites
@@ -1640,6 +1649,8 @@
     state.currentView = "favorites";
     state.visibleGames = 24; // Reset visible games count
     renderGames();
+    // Hide featured section when viewing favorites
+    elements.featuredSection.style.display = 'none';
   }
 
   // Show random game
