@@ -107,7 +107,7 @@
       width: 0%;
       border-radius: 10px;
       position: relative;
-      animation: loadAnim 2s ease-out forwards, shimmer 1.5s infinite;
+      animation: loadAnim 2.2s ease-out forwards, shimmer 1.5s infinite;
       box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
     }
 
@@ -147,6 +147,8 @@
       font-size: 14px;
       color: var(--text-secondary);
       font-weight: 500;
+      min-width: 40px;
+      text-align: center;
     }
 
     #main-content {
@@ -1415,14 +1417,18 @@
   // Animate loading percentage
   function animateLoadingPercentage() {
     let percentage = 0;
+    const targetPercentage = 100;
+    const duration = 2000; // 2 seconds to match the loading screen duration
+    const increment = targetPercentage / (duration / 50); // Update every 50ms
+    
     const interval = setInterval(() => {
-      percentage += Math.random() * 15;
-      if (percentage >= 100) {
-        percentage = 100;
+      percentage += increment;
+      if (percentage >= targetPercentage) {
+        percentage = targetPercentage;
         clearInterval(interval);
       }
       elements.loadingPercentage.textContent = Math.floor(percentage) + '%';
-    }, 200);
+    }, 50);
   }
 
   // Debounce function for search
