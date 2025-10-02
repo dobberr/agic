@@ -295,27 +295,102 @@
 
     /* Featured Section */
     .featured-section {
-      animation: fadeIn 0.5s ease-in-out;
+      position: relative;
+      margin-bottom: 20px;
+      overflow: hidden;
     }
 
-    .section-label {
-      font-weight: 600;
-      font-size: 20px;
-      padding: 20px 20px 10px;
+    .featured-container {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.3s ease;
+    }
+
+    .featured-container:hover {
+      transform: scale(1.01);
+    }
+
+    .featured-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+      padding: 30px;
+    }
+
+    .featured-content {
+      max-width: 600px;
+    }
+
+    .featured-badge {
+      display: inline-block;
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .featured-title {
+      font-weight: 700;
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: hsl(var(--foreground));
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .featured-description {
+      color: hsl(var(--foreground));
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 1.4;
+      max-width: 80%;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .featured-button {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border: none;
+      padding: 12px 24px;
+      border-radius: calc(var(--radius) - 2px);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 16px;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .featured-button:hover {
+      background: hsl(271.1 91.7% 72%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .featured-controls {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .featured-btn {
-      background: hsl(var(--secondary));
-      color: hsl(var(--secondary-foreground));
-      border: 1px solid hsl(var(--border));
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      color: hsl(var(--foreground));
+      border: 1px solid rgba(255, 255, 255, 0.1);
       width: 40px;
       height: 40px;
       border-radius: 9999px;
@@ -327,68 +402,32 @@
     }
 
     .featured-btn:hover {
-      background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
     }
 
-    .featured-container {
-      width: calc(100% - 40px);
-      max-width: 1200px;
-      margin: 0 auto;
-      margin-bottom: 20px;
-      height: 180px;
-      border-radius: calc(var(--radius) - 2px);
-      overflow: hidden;
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      transition: transform 0.2s;
-    }
-
-    .featured-container:hover {
-      transform: scale(1.02);
-    }
-
-    .featured-overlay {
+    .featured-indicators {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
+      gap: 8px;
     }
 
-    .featured-title {
-      font-weight: 700;
-      font-size: 24px;
-      margin-bottom: 8px;
-      color: hsl(var(--foreground));
-    }
-
-    .featured-description {
-      color: hsl(var(--muted-foreground));
-      margin-bottom: 16px;
-      max-width: 80%;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .featured-button {
-      background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
-      border: none;
-      padding: 10px 20px;
-      border-radius: calc(var(--radius) - 2px);
+    .featured-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
       cursor: pointer;
       transition: all 0.2s;
-      font-weight: 500;
     }
 
-    .featured-button:hover {
-      background: hsl(271.1 91.7% 72%);
-      transform: translateY(-1px);
+    .featured-indicator.active {
+      background: hsl(var(--primary));
+      width: 24px;
+      border-radius: 4px;
     }
 
     /* Category Filters */
@@ -396,7 +435,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding: 10px 20px;
+      padding: 15px 20px;
       background: hsl(var(--card));
       border-bottom: 1px solid hsl(var(--border));
       overflow-x: auto;
@@ -851,21 +890,16 @@
       height: 36px;
     }
 
-    .compact-mode .section-label {
-      font-size: 18px;
-      padding: 16px 16px 8px;
-    }
-
     .compact-mode .featured-container {
-      height: 140px;
+      height: 200px;
     }
 
     .compact-mode .featured-title {
-      font-size: 20px;
+      font-size: 24px;
     }
 
     .compact-mode .featured-description {
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .compact-mode .games-container {
@@ -922,13 +956,12 @@
         font-size: 14px;
       }
 
-      .section-label {
-        font-size: 18px;
-        padding: 16px 16px 8px;
+      .featured-container {
+        height: 220px;
       }
 
-      .featured-container {
-        height: 140px;
+      .featured-title {
+        font-size: 28px;
       }
 
       .top-bar h2 {
@@ -959,6 +992,18 @@
 
       .mobile-menu {
         display: flex;
+      }
+
+      .featured-container {
+        height: 200px;
+      }
+
+      .featured-title {
+        font-size: 24px;
+      }
+
+      .featured-description {
+        font-size: 14px;
       }
     }
 
@@ -1083,8 +1128,17 @@
 </div>
 
 <div class="featured-section" id="featuredSection">
-  <div class="section-label">
-    <span>Featured Games</span>
+  <div class="featured-container" id="featuredContainer">
+    <div class="featured-overlay">
+      <div class="featured-content">
+        <div class="featured-badge">Featured</div>
+        <div class="featured-title" id="featuredTitle"></div>
+        <div class="featured-description" id="featuredDescription"></div>
+        <button class="featured-button" onclick="openGame(featuredGame)">
+          <i class="fas fa-play"></i> Play Now
+        </button>
+      </div>
+    </div>
     <div class="featured-controls">
       <button class="featured-btn" onclick="previousFeatured()" aria-label="Previous Featured">
         <i class="fas fa-chevron-left"></i>
@@ -1093,12 +1147,8 @@
         <i class="fas fa-chevron-right"></i>
       </button>
     </div>
-  </div>
-  <div class="featured-container" id="featuredContainer">
-    <div class="featured-overlay">
-      <div class="featured-title" id="featuredTitle"></div>
-      <div class="featured-description" id="featuredDescription"></div>
-      <button class="featured-button" onclick="openGame(featuredGame)">Play Now</button>
+    <div class="featured-indicators" id="featuredIndicators">
+      <!-- Indicators will be dynamically added here -->
     </div>
   </div>
 </div>
@@ -1108,10 +1158,6 @@
 </div>
 
 <div class="games-wrapper">
-  <div class="games-header">
-    <div class="games-title" id="gamesTitle">All Games</div>
-    <div class="games-count" id="gamesCount"></div>
-  </div>
   <div class="games-container" id="gamesContainer"></div>
 </div>
 
@@ -1444,7 +1490,8 @@
     featuredDescription: document.getElementById("featuredDescription"),
     loadingPercentage: document.getElementById("loadingPercentage"),
     loadingProgress: document.getElementById("loadingProgress"),
-    categoryFilters: document.getElementById("categoryFilters")
+    categoryFilters: document.getElementById("categoryFilters"),
+    featuredIndicators: document.getElementById("featuredIndicators")
   };
 
   // Initialize featured games
@@ -1498,6 +1545,35 @@
     document.querySelector('[data-category="all"]').classList.add('active');
   }
 
+  // Initialize featured indicators
+  function initFeaturedIndicators() {
+    const indicatorsContainer = elements.featuredIndicators;
+    
+    featuredGames.forEach((game, index) => {
+      const indicator = document.createElement("div");
+      indicator.className = "featured-indicator";
+      if (index === 0) indicator.classList.add("active");
+      indicator.addEventListener("click", () => {
+        state.featuredIndex = index;
+        updateFeaturedGame();
+        updateFeaturedIndicators();
+      });
+      indicatorsContainer.appendChild(indicator);
+    });
+  }
+
+  // Update featured indicators
+  function updateFeaturedIndicators() {
+    const indicators = elements.featuredIndicators.querySelectorAll(".featured-indicator");
+    indicators.forEach((indicator, index) => {
+      if (index === state.featuredIndex) {
+        indicator.classList.add("active");
+      } else {
+        indicator.classList.remove("active");
+      }
+    });
+  }
+
   // Filter games by category
   function filterByCategory(category) {
     state.currentCategory = category;
@@ -1511,12 +1587,6 @@
         filter.classList.remove("active");
       }
     });
-    
-    // Update title
-    const categoryData = mainCategories.find(cat => cat.name === category);
-    if (categoryData) {
-      elements.gamesTitle.textContent = categoryData.label + " Games";
-    }
     
     renderGames();
   }
@@ -1548,6 +1618,9 @@
     setTimeout(() => {
       // Setup featured game
       updateFeaturedGame();
+      
+      // Initialize featured indicators
+      initFeaturedIndicators();
 
       // Initialize category filters
       initCategoryFilters();
@@ -1721,9 +1794,6 @@
     // Sort games alphabetically
     gamesToShow.sort((a, b) => a.name.localeCompare(b.name));
     
-    // Update games count
-    elements.gamesCount.textContent = `(${gamesToShow.length})`;
-    
     // Clear container
     elements.gamesContainer.innerHTML = "";
     
@@ -1861,7 +1931,6 @@
       }
     });
     
-    elements.gamesTitle.textContent = "All Games";
     renderGames();
     // Show featured section when viewing all games
     elements.featuredSection.style.display = 'block';
@@ -1871,7 +1940,6 @@
   function showFavorites() {
     state.currentView = "favorites";
     state.visibleGames = 24; // Reset visible games count
-    elements.gamesTitle.textContent = "Favorites";
     renderGames();
     // Hide featured section when viewing favorites
     elements.featuredSection.style.display = 'none';
@@ -2031,11 +2099,13 @@
   function nextFeatured() {
     state.featuredIndex = (state.featuredIndex + 1) % featuredGames.length;
     updateFeaturedGame();
+    updateFeaturedIndicators();
   }
 
   function previousFeatured() {
     state.featuredIndex = (state.featuredIndex - 1 + featuredGames.length) % featuredGames.length;
     updateFeaturedGame();
+    updateFeaturedIndicators();
   }
 
   function updateFeaturedGame() {
