@@ -391,6 +391,66 @@
       transform: translateY(-1px);
     }
 
+    /* Category Filters */
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 20px;
+      background: hsl(var(--card));
+      border-bottom: 1px solid hsl(var(--border));
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+    }
+
+    .category-filters::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .category-filters::-webkit-scrollbar-track {
+      background: hsl(var(--background));
+    }
+
+    .category-filters::-webkit-scrollbar-thumb {
+      background-color: hsl(var(--muted));
+      border-radius: 3px;
+    }
+
+    .category-filter {
+      background: hsl(var(--secondary));
+      color: hsl(var(--secondary-foreground));
+      border: 1px solid hsl(var(--border));
+      padding: 8px 16px;
+      border-radius: calc(var(--radius) - 2px);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .category-filter:hover {
+      background: hsl(var(--accent));
+      transform: translateY(-1px);
+    }
+
+    .category-filter.active {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border-color: hsl(var(--primary));
+    }
+
+    .category-filter .count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 6px;
+      border-radius: 9999px;
+      font-size: 12px;
+    }
+
     /* Games Container */
     .games-wrapper {
       display: flex;
@@ -398,11 +458,28 @@
       min-height: 0;
     }
 
+    .games-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px 10px;
+    }
+
+    .games-title {
+      font-weight: 600;
+      font-size: 20px;
+    }
+
+    .games-count {
+      font-size: 14px;
+      color: hsl(var(--muted-foreground));
+    }
+
     .games-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
-      padding: 20px;
+      padding: 0 20px 20px;
       justify-content: center;
       overflow-y: auto;
       scrollbar-width: thin;
@@ -794,7 +871,7 @@
     .compact-mode .games-container {
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 16px;
-      padding: 16px;
+      padding: 0 16px 16px;
     }
 
     .compact-mode .game {
@@ -829,7 +906,7 @@
       .games-container {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 16px;
-        padding: 16px;
+        padding: 0 16px 16px;
       }
 
       .search-container {
@@ -969,9 +1046,6 @@
     <input type="text" id="search" placeholder="Search games..." aria-label="Search games" />
   </div>
   <div class="nav-buttons">
-    <button onclick="showAllGames()" aria-label="All Games">
-      <i class="fas fa-gamepad"></i> All Games
-    </button>
     <button onclick="showFavorites()" aria-label="Favorites">
       <i class="fas fa-star"></i> Favorites
     </button>
@@ -1029,10 +1103,14 @@
   </div>
 </div>
 
+<div class="category-filters" id="categoryFilters">
+  <!-- Category filters will be dynamically added here -->
+</div>
+
 <div class="games-wrapper">
-  <div class="section-label">
-    <span id="gamesSectionTitle">All Games</span>
-    <span id="gamesCount" style="font-size: 14px; color: hsl(var(--muted-foreground));"></span>
+  <div class="games-header">
+    <div class="games-title" id="gamesTitle">All Games</div>
+    <div class="games-count" id="gamesCount"></div>
   </div>
   <div class="games-container" id="gamesContainer"></div>
 </div>
@@ -1122,215 +1200,216 @@
 
   // Game data with categories and descriptions
   const games = [
-    { name: "Cookie Clicker", image: "Images/cookieclicker.jpeg", path: "cookieclicker/", category: ["idle", "puzzle"], description: "Bake cookies and build a cookie empire!" },
-    { name: "Doge Miner", image: "Images/dogeminer.png", path: "DogeMiner/", category: ["idle", "arcade"], description: "Mine dogecoins and travel to the moon!" },
-    { name: "Flappy Bird", image: "Images/Flappybird.jpg", path: "flappy/", category: ["arcade", "action"], description: "Navigate through pipes without touching them!" },
+    { name: "Cookie Clicker", image: "Images/cookieclicker.jpeg", path: "cookieclicker/", category: ["idle"], description: "Bake cookies and build a cookie empire!" },
+    { name: "Doge Miner", image: "Images/dogeminer.png", path: "DogeMiner/", category: ["idle"], description: "Mine dogecoins and travel to the moon!" },
+    { name: "Flappy Bird", image: "Images/Flappybird.jpg", path: "flappy/", category: ["action"], description: "Navigate through pipes without touching them!" },
     { name: "2048", image: "Images/2048.jpg", path: "2048/", category: ["puzzle"], description: "Combine tiles to reach 2048!" },
-    { name: "Five Nights at Freddy's 4", image: "Images/FNAFS4.png", path: "FNAF4/", category: ["horror", "action"], description: "Survive five nights with Freddy and friends!" },
+    { name: "Five Nights at Freddy's 4", image: "Images/FNAFS4.png", path: "FNAF4/", category: ["horror"], description: "Survive five nights with Freddy and friends!" },
     { name: "Basketball Stars", image: "Images/BasketballStars.jpeg", path: "basketball-stars/", category: ["sports"], description: "Compete in basketball challenges!" },
-    { name: "Doodle Jump", image: "Images/doodlejump.jpg", path: "doodle/", category: ["arcade"], description: "Jump as high as you can!" },
-    { name: "Slope", image: "Images/slope.jpg", path: "slope/", category: ["action", "arcade"], description: "Roll down the slope without falling!" },
-    { name: "AdVenture Capitalist", image: "Images/AdVentureCapitalist.jpg", path: "adcap/", category: ["idle", "strategy"], description: "Build your business empire from scratch!" },
-    { name: "A Dance Of Fire And Ice", image: "Images/adofai.png", path: "adofai/", category: ["rhythm", "action"], description: "Rhythm game with one-button controls!" },
-    { name: "Baldi's Basics in Education and Learning", image: "Images/BaldisBasics.png", path: "baldi/", category: ["horror", "puzzle"], description: "Solve math problems while avoiding Baldi!" },
-    { name: "Burrito Bison", image: "Images/BurritoBison.jpg", path: "bison/", category: ["action", "arcade"], description: "Launch as far as possible and smash gummies!" },
+    { name: "Doodle Jump", image: "Images/doodlejump.jpg", path: "doodle/", category: ["action"], description: "Jump as high as you can!" },
+    { name: "Slope", image: "Images/slope.jpg", path: "slope/", category: ["action"], description: "Roll down the slope without falling!" },
+    { name: "AdVenture Capitalist", image: "Images/AdVentureCapitalist.jpg", path: "adcap/", category: ["idle"], description: "Build your business empire from scratch!" },
+    { name: "A Dance Of Fire And Ice", image: "Images/adofai.png", path: "adofai/", category: ["puzzle"], description: "Rhythm game with one-button controls!" },
+    { name: "Baldi's Basics in Education and Learning", image: "Images/BaldisBasics.png", path: "baldi/", category: ["horror"], description: "Solve math problems while avoiding Baldi!" },
+    { name: "Burrito Bison", image: "Images/BurritoBison.jpg", path: "bison/", category: ["action"], description: "Launch as far as possible and smash gummies!" },
     { name: "Twitch Tetris", image: "Images/TwitchTetris.png", path: "tetris/", category: ["puzzle"], description: "Classic tetris with a twist!" },
-    { name: "BitLife", image: "Images/BitLife.png", path: "bitlife/", category: ["simulation", "strategy"], description: "Live a virtual life from birth to death!" },
-    { name: "Boxing Physics 2", image: "Images/BoxingPhysics2.jpg", path: "boxing-physics2/", category: ["sports", "action"], description: "Physics-based boxing game!" },
+    { name: "BitLife", image: "Images/BitLife.png", path: "bitlife/", category: ["puzzle"], description: "Live a virtual life from birth to death!" },
+    { name: "Boxing Physics 2", image: "Images/BoxingPhysics2.jpg", path: "boxing-physics2/", category: ["sports"], description: "Physics-based boxing game!" },
     { name: "BreakLock", image: "Images/BreakLock.jpg", path: "breaklock/", category: ["puzzle"], description: "Solve the lock puzzle!" },
-    { name: "Burger & Frights", image: "Images/Burger&Frights.png", path: "burger/", category: ["horror", "action"], description: "Deliver burgers through a dark forest!" },
-    { name: "Cell To Singularity", image: "Images/CellToSingularity.jpg", path: "cell/", category: ["idle", "strategy"], description: "Evolve from single cell to space civilization!" },
-    { name: "Chrome Dino", image: "Images/ChromeDIno.png", path: "chrome-dino/", category: ["arcade"], description: "The classic Chrome dinosaur game!" },
-    { name: "Sort The Court", image: "Images/SortTheCourt.jpg", path: "court/", category: ["strategy", "puzzle"], description: "Make decisions as a ruler to grow your kingdom!" },
-    { name: "Crossy Road", image: "Images/CrossyRoad.png", path: "crossy/", category: ["arcade", "action"], description: "Cross roads, train tracks, and rivers!" },
-    { name: "Fruit Ninja", image: "Images/FruitNinja.jpg", path: "fruitninja/", category: ["action", "arcade"], description: "Slice fruits while avoiding bombs!" },
-    { name: "Doodle God", image: "Images/DoodleGod.jpg", path: "doodlegod/", category: ["puzzle", "strategy"], description: "Combine elements to create new ones!" },
-    { name: "Dreader", image: "Images/Dreader.png", path: "dreader/", category: ["horror", "puzzle"], description: "Navigate through a dark maze!" },
-    { name: "Exhibit Of Sorrows", image: "Images/ExhibitOfSorrows.png", path: "exhibit/", category: ["horror", "puzzle"], description: "Explore a mysterious exhibit!" },
-    { name: "Friday Night Funkin´", image: "Images/FridayNightFunkin.png", path: "fnf-w7/", category: ["rhythm", "music"], description: "Battle through music rap battles!" },
-    { name: "Papa's Freezeria", image: "Images/PapasFreezeria.jpg", path: "freezeria/", category: ["simulation", "strategy"], description: "Run a freezeria and serve customers!" },
-    { name: "Friendly Fire", image: "Images/FriendlyFire.jpg", path: "friendlyfire/", category: ["action", "puzzle"], description: "Guide your troops to victory!" },
-    { name: "Game Inside A Game", image: "Images/GameInsideAGame.jpg", path: "game-inside/", category: ["puzzle", "arcade"], description: "A game within a game within a game!" },
-    { name: "George And The Printer", image: "Images/GeorgeAndThePrinter.jpg", path: "dreader/", category: ["puzzle", "horror"], description: "Help George with his printer!" },
-    { name: "Getaway Shootout", image: "Images/%20GetawayShootout.jpg", path: "getaway-shootout/", category: ["action", "multiplayer"], description: "Race to the getaway point!" },
+    { name: "Burger & Frights", image: "Images/Burger&Frights.png", path: "burger/", category: ["horror"], description: "Deliver burgers through a dark forest!" },
+    { name: "Cell To Singularity", image: "Images/CellToSingularity.jpg", path: "cell/", category: ["idle"], description: "Evolve from single cell to space civilization!" },
+    { name: "Chrome Dino", image: "Images/ChromeDIno.png", path: "chrome-dino/", category: ["action"], description: "The classic Chrome dinosaur game!" },
+    { name: "Sort The Court", image: "Images/SortTheCourt.jpg", path: "court/", category: ["puzzle"], description: "Make decisions as a ruler to grow your kingdom!" },
+    { name: "Crossy Road", image: "Images/CrossyRoad.png", path: "crossy/", category: ["action"], description: "Cross roads, train tracks, and rivers!" },
+    { name: "Fruit Ninja", image: "Images/FruitNinja.jpg", path: "fruitninja/", category: ["action"], description: "Slice fruits while avoiding bombs!" },
+    { name: "Doodle God", image: "Images/DoodleGod.jpg", path: "doodlegod/", category: ["puzzle"], description: "Combine elements to create new ones!" },
+    { name: "Dreader", image: "Images/Dreader.png", path: "dreader/", category: ["horror"], description: "Navigate through a dark maze!" },
+    { name: "Exhibit Of Sorrows", image: "Images/ExhibitOfSorrows.png", path: "exhibit/", category: ["horror"], description: "Explore a mysterious exhibit!" },
+    { name: "Friday Night Funkin´", image: "Images/FridayNightFunkin.png", path: "fnf-w7/", category: ["puzzle"], description: "Battle through music rap battles!" },
+    { name: "Papa's Freezeria", image: "Images/PapasFreezeria.jpg", path: "freezeria/", category: ["puzzle"], description: "Run a freezeria and serve customers!" },
+    { name: "Friendly Fire", image: "Images/FriendlyFire.jpg", path: "friendlyfire/", category: ["puzzle"], description: "Guide your troops to victory!" },
+    { name: "Game Inside A Game", image: "Images/GameInsideAGame.jpg", path: "game-inside/", category: ["puzzle"], description: "A game within a game within a game!" },
+    { name: "George And The Printer", image: "Images/GeorgeAndThePrinter.jpg", path: "dreader/", category: ["horror"], description: "Help George with his printer!" },
+    { name: "Getaway Shootout", image: "Images/%20GetawayShootout.jpg", path: "getaway-shootout/", category: ["multiplayer"], description: "Race to the getaway point!" },
     { name: "Grey-Box Tesing", image: "Images/GreyBoxTesting.jpg", path: "greybox/", category: ["puzzle"], description: "Test the grey box!" },
-    { name: "Happy Wheels", image: "Images/HappyWheels.png", path: "580301-HappyWheels/", category: ["action", "racing"], description: "Navigate through obstacle courses!" },
-    { name: "Papa's Hot Doggeria", image: "Images/PapasHotDoggeria.jpg", path: "hotdoggeria/", category: ["simulation", "strategy"], description: "Run a hot dog stand at a baseball stadium!" },
-    { name: "Jetpack Joyride", image: "Images/JetpackJoyride.png", path: "jetpackjoyride/", category: ["action", "arcade"], description: "Fly with a jetpack and avoid obstacles!" },
-    { name: "Knife Hit", image: "Images/KnifeHit.png", path: "knifehit/", category: ["action", "arcade"], description: "Throw knives at targets without hitting other knives!" },
-    { name: "Apple Knight", image: "Images/AppleKnight.png", path: "knight/", category: ["action", "adventure"], description: "Embark on an adventure as Apple Knight!" },
-    { name: "Lose95", image: "Images/Lose95.png", path: "lose95/", category: ["puzzle", "simulation"], description: "Experience Windows 95 in a new way!" },
-    { name: "Papa Louie", image: "Images/PapaLouie.jpeg", path: "louie/", category: ["action", "adventure"], description: "Rescue customers from mutant food monsters!" },
-    { name: "Super Mario Bros. Versus", image: "Images/SuperMarioBrosVersus.jpg", path: "mariovsluigi/", category: ["action", "multiplayer"], description: "Mario vs Luigi in a battle!" },
-    { name: "Minecraft Classic", image: "Images/MinecraftClassic.png", path: "mcbeta0.30/", category: ["creative", "multiplayer"], description: "Classic Minecraft in your browser!" },
-    { name: "The Open House", image: "Images/TheOpenHouse.jpg", path: "open/", category: ["horror", "puzzle"], description: "Explore an open house with secrets!" },
-    { name: "Papa's Burgeria", image: "Images/PapasBurgeria.jpg", path: "papasb/", category: ["simulation", "strategy"], description: "Run a burger restaurant!" },
-    { name: "Papa's Pizzeria", image: "Images/PapasPizzeria.jpg", path: "pizzeria/", category: ["simulation", "strategy"], description: "Make and serve pizzas to customers!" },
-    { name: "Portaboy", image: "Images/Portaboy.jpg", path: "portaboy/", category: ["puzzle", "arcade"], description: "Play mini-games on a virtual console!" },
-    { name: "Pressing Under Pressure", image: "Images/PressingUnderPressure.jpg", path: "pressing/", category: ["puzzle", "action"], description: "Press buttons under pressure!" },
-    { name: "Retro Bowl", image: "Images/RetroBowl.jpg", path: "retro-bowl/", category: ["sports", "strategy"], description: "Lead your team to victory in Retro Bowl!" },
-    { name: "Robogo", image: "Images/Robogo.png", path: "robogo/", category: ["puzzle", "strategy"], description: "Guide robots to their destinations!" },
-    { name: "Run 3", image: "Images/Run3.png", path: "Run3/", category: ["action", "arcade"], description: "Run through space tunnels!" },
-    { name: "Bad Time Simulator (Sans Fight)", image: "Images/BadTimeSimulator.png", path: "sansfight/", category: ["action", "rpg"], description: "Battle Sans from Undertale!" },
-    { name: "Sketchbook", image: "Images/Sketchbook.jpg", path: "sketchbook/", category: ["creative"], description: "Draw and create in your sketchbook!" },
-    { name: "Super Mario 64", image: "Images/SuperMario64.jpg", path: "sm64/", category: ["action", "adventure"], description: "Classic Mario 64 in your browser!" },
-    { name: "Snake", image: "Images/Snake.png", path: "snake/", category: ["arcade", "puzzle"], description: "Classic snake game!" },
-    { name: "Superhot", image: "Images/Superhot.png", path: "superhot/", category: ["action", "puzzle"], description: "Time moves only when you move!" },
-    { name: "Deepest Sword", image: "Images/DeepestSword.jpg", path: "sword/", category: ["puzzle", "action"], description: "Use your sword to reach the dragon's heart!" },
-    { name: "Papa's Taco Mia", image: "Images/PapasTacoMia.png", path: "tacomia/", category: ["simulation", "strategy"], description: "Run a taco restaurant!" },
-    { name: "Tunnel Rush", image: "Images/TunnelRush.png", path: "tunnelrush/", category: ["action", "arcade"], description: "Navigate through a tunnel at high speed!" },
-    { name: "We Become What We Behold", image: "Images/WeBecomeWhatWeBehold.jpg", path: "wbwwb/", category: ["puzzle", "simulation"], description: "A game about media cycles!" },
-    { name: "Wordle Unlimited", image: "Images/Wordle.png", path: "wordle/", category: ["puzzle", "word"], description: "Guess the word in 6 tries!" },
-    { name: "Wounded Summer", image: "Images/WoundedSummer.png", path: "wounded-summer/", category: ["action", "adventure"], description: "Survive the summer!" },
-    { name: "Xx142-b2exe", image: "Images/Xx142-b2exe.png", path: "xx142-b2exe/", category: ["puzzle", "horror"], description: "Decode the mysterious file!" },
-    { name: "Among Us", image: "Images/AmongUs.jpg", path: "amongus/", category: ["multiplayer", "action"], description: "Find the impostor among the crew!" },
-    { name: "Block Blast", image: "Images/BlockBlast.png", path: "blockblast/", category: ["puzzle", "arcade"], description: "Blast blocks and clear the board!" },
-    { name: "Big Tower Tiny Square", image: "Images/BigTowerTinySquare.png", path: "bigtowertinysquare/", category: ["action", "puzzle"], description: "Climb the big tower!" },
-    { name: "Blumgi Slime", image: "Images/BlumjiSlime.jpg", path: "blumgislime/", category: ["action", "arcade"], description: "Jump and bounce as a slime!" },
-    { name: "Box Chase", image: "Images/BoxChase.png", path: "boxchase/", category: ["action", "puzzle"], description: "Chase boxes and solve puzzles!" },
-    { name: "Capybara Clicker", image: "Images/CapybaraClicker.png", path: "capybaraclicker/", category: ["idle", "arcade"], description: "Click capybaras and build your capybara empire!" },
-    { name: "CCMMYY", image: "Images/CCMMYY.png", path: "ccmmyy/", category: ["puzzle", "action"], description: "Solve the color puzzle!" },
-    { name: "Impossible Cookie Clicker", image: "Images/ImpossibleCookieClicker.png", path: "impossiblecookieclicker/", category: ["idle", "puzzle"], description: "The impossible version of Cookie Clicker!" },
-    { name: "Breakout", image: "Images/Breakout.png", path: "breakout/", category: ["arcade", "puzzle"], description: "Classic breakout game!" },
-    { name: "Checkers", image: "Images/Checkers.png", path: "checkers/", category: ["strategy", "board"], description: "Classic checkers game!" },
-    { name: "Chess", image: "Images/Chess.png", path: "chess/", category: ["strategy", "board"], description: "Classic chess game!" },
-    { name: "Cluster Rush", image: "Images/ClusterRush.jpg", path: "clusterrush/", category: ["action", "arcade"], description: "Navigate through clusters at high speed!" },
-    { name: "Cut The Rope", image: "Images/CutTheRope.png", path: "cuttherope/", category: ["puzzle", "physics"], description: "Cut ropes to feed candy to Om Nom!" },
-    { name: "Deadly Descent", image: "Images/DeadlyDescent.png", path: "deadlydescent/", category: ["action", "arcade"], description: "Descend through dangerous terrain!" },
-    { name: "Doge Miner 2", image: "Images/DogeMiner2.png", path: "dogeminer2/", category: ["idle", "arcade"], description: "Mine even more dogecoins in the sequel!" },
-    { name: "Eggy Car", image: "Images/EggyCar.png", path: "eggycar/", category: ["action", "physics"], description: "Drive a car with an egg on top!" },
-    { name: "Getting Over It", image: "Images/GettingOverIt.png", path: "gettingoveritscratch/", category: ["action", "puzzle"], description: "Climb a mountain with a hammer!" },
-    { name: "Gladihoppers", image: "Images/GladiHoppers.png", path: "gladihoppers/", category: ["action", "sports"], description: "Battle as a gladiator!" },
-    { name: "Google Baseball", image: "Images/GoogleBaseball.jpeg", path: "googlebaseball/", category: ["sports", "arcade"], description: "Google's baseball game!" },
-    { name: "Five Nights at Freddy's 2", image: "Images/FNAF2.png", path: "fnaf2/", category: ["horror", "action"], description: "Survive five nights at Freddy's 2!" },
-    { name: "Drive Mad", image: "Images/DriveMad.png", path: "drivemad/", category: ["action", "racing"], description: "Drive through challenging tracks!" },
-    { name: "Drift Boss", image: "Images/DriftBoss.png", path: "driftboss/", category: ["action", "racing"], description: "Drift through corners!" },
-    { name: "Five Nights at Winston's", image: "Images/FiveNightsAtWinstons.png", path: "fnaw/", category: ["horror", "action"], description: "Survive five nights at Winston's!" },
-    { name: "Slither.io Remake", image: "Images/Slither.ioRemake.png", path: "slitherio/", category: ["multiplayer", "action"], description: "Grow your snake by eating pellets!" },
-    { name: "Snow Rider 3D", image: "Images/SnowRider3D.png", path: "snowrider3d/", category: ["action", "sports"], description: "Snowboard down the mountain!" },
-    { name: "Stack", image: "Images/Stack.png", path: "stack/", category: ["puzzle", "arcade"], description: "Stack blocks as high as you can!" },
-    { name: "Subway Surfers San Francisco", image: "Images/SubwaySurfersSanFrancisco.png", path: "subwaysurfers/", category: ["action", "arcade"], description: "Surf through San Francisco!" },
-    { name: "There Is No Game", image: "Images/ThereIsNoGame.png", path: "thereisnogame/", category: ["puzzle", "adventure"], description: "A game that insists it's not a game!" },
-    { name: "Tiny Cars", image: "Images/TinyCars.png", path: "tinycars/", category: ["action", "racing"], description: "Race tiny cars!" },
-    { name: "Tiny Fishing", image: "Images/TinyFishing.png", path: "tinyfishing/", category: ["arcade", "simulation"], description: "Catch tiny fish!" },
-    { name: "Unicycle Hero", image: "Images/UnicycleHero.png", path: "unicyclehero/", category: ["sports", "action"], description: "Balance on a unicycle!" },
-    { name: "Wolfenstein 3D", image: "Images/Wolfenstein3D.png", path: "wolfenstein3d/", category: ["action", "shooter"], description: "Classic 3D shooter game!" },
-    { name: "Idle Ants", image: "Images/IdleAnts.png", path: "idleants/", category: ["idle", "simulation"], description: "Manage an ant colony!" },
-    { name: "Idle Breakout", image: "Images/IdleBreakout.png", path: "idlebreakout/", category: ["idle", "puzzle"], description: "Idle version of breakout!" },
-    { name: "Idle Dice", image: "Images/IdleDice.png", path: "idledice/", category: ["idle", "puzzle"], description: "Roll dice and earn points!" },
-    { name: "Mari0", image: "Images/Mari0.png", path: "mari0/", category: ["action", "puzzle"], description: "Mario with portal gun mechanics!" },
-    { name: "MotoX3M", image: "Images/MotoX3M.png", path: "motox3m/", category: ["action", "sports"], description: "Complete motocross challenges!" },
-    { name: "OvO", image: "Images/OvO.png", path: "ovo/", category: ["action", "puzzle"], description: "Navigate through challenging levels!" },
-    { name: "Race Survival", image: "Images/RaceSurvival.png", path: "racesurvival/", category: ["action", "racing"], description: "Survive the race!" },
-    { name: "Recoil", image: "Images/Recoil.png", path: "recoil/", category: ["action", "shooter"], description: "Shoot and recoil to move!" },
-    { name: "RRGGBB", image: "Images/RRGGBB.png", path: "rrggbb/", category: ["puzzle", "action"], description: "Color-based puzzle game!" },
-    { name: "Resizer", image: "Images/Resizer.png", path: "resizer/", category: ["puzzle", "action"], description: "Resize objects to solve puzzles!" },
-    { name: "Polytrack", image: "Images/Polytrack.png", path: "polytrack/", category: ["action", "racing"], description: "Race on polygonal tracks!" },
-    { name: "Googlefeud", image: "Images/Googlefeud.png", path: "googlefeud/", category: ["puzzle", "word"], description: "Guess Google search suggestions!" },
-    { name: "Let's Surf", image: "Images/Letssurf.png", path: "letssurf/", category: ["action", "sports"], description: "Surf the waves!" },
-    { name: "Minecraft 1.5.2", image: "Images/Minecraft1.5.2.png", path: "AWeb/", category: ["creative", "survival"], description: "Play Minecraft 1.5.2 in your browser!" },
-    { name: "Minecraft 1.8.8", image: "Images/Minecraft1.8.8.png", path: "minecraft18/", category: ["creative", "survival"], description: "Play Minecraft 1.8.8 in your browser!" },
-    { name: "Monster Tracks", image: "Images/Monstertracks.png", path: "monstertracks/", category: ["action", "racing"], description: "Race on monster tracks!" },
-    { name: "MotoX3M 2", image: "Images/MotoX3M2.png", path: "motox3m2/", category: ["action", "sports"], description: "More motocross challenges!" },
-    { name: "Grind Craft", image: "Images/GrindCraft.png", path: "grindcraft/", category: ["idle", "puzzle"], description: "Grind resources and craft items!" },
-    { name: "Pacman", image: "Images/Pacman.png", path: "pacman/", category: ["arcade", "puzzle"], description: "Classic Pacman game!" },
-    { name: "Plants Vs. Zombies", image: "Images/PVZ.png", path: "plantsvszombies/", category: ["strategy", "action"], description: "Defend your home from zombies!" },
-    { name: "Pool", image: "Images/Pool.png", path: "pool/", category: ["sports", "puzzle"], description: "Classic pool game!" },
-    { name: "Minecraft Tower Defense", image: "Images/mctd.png", path: "mctd/", category: ["strategy", "tower defense"], description: "Tower defense with Minecraft theme!" },
-    { name: "Minecraft Tower Defense 2", image: "Images/mctd2.jpg", path: "mctd2/", category: ["strategy", "tower defense"], description: "More Minecraft tower defense!" },
-    { name: "Draw The Hill", image: "Images/DrawTheHill.png", path: "draw-the-hill/", category: ["puzzle", "action"], description: "Draw hills to guide the car!" },
-    { name: "Five Nights at Freddy's", image: "Images/Fnaf.png", path: "FNAF1/index.html", category: ["horror", "action"], description: "Survive five nights at Freddy's!" },
-    { name: "Five Nights at Freddy's 3", image: "Images/Fnaf3.png", path: "FNAF3/index.html", category: ["horror", "action"], description: "Survive five nights at Freddy's 3!" },
-    { name: "Kitchen Gun", image: "Images/KitchenGun.png", path: "kitchen-gun-game/", category: ["action", "shooter"], description: "Shoot with a kitchen gun!" },
-    { name: "Noob Steve Parkour", image: "Images/NoobSteveParkour.png", path: "noob-steve-parkour/", category: ["action", "puzzle"], description: "Parkour as Noob Steve!" },
-    { name: "Polybranch", image: "Images/Polybranch.png", path: "polybranch/", category: ["puzzle", "action"], description: "Grow branches without colliding!" },
-    { name: "Popcat", image: "Images/Popcat.png", path: "popcat-classic/", category: ["arcade", "clicker"], description: "Click the popcat!" },
-    { name: "Push Your Luck", image: "Images/PushYourLuck.png", path: "push-your-luck/", category: ["puzzle", "strategy"], description: "Test your luck!" },
-    { name: "The Heist", image: "Images/TheHeist.png", path: "theheist/", category: ["puzzle", "action"], description: "Plan and execute a heist!" },
-    { name: "Tomb Of The Mask", image: "Images/TombOfTheMask.png", path: "tomb/", category: ["action", "arcade"], description: "Navigate through the tomb!" },
-    { name: "Mine Sweeper", image: "Images/MineSweepers.png", path: "minesweeper/", category: ["puzzle", "strategy"], description: "Classic minesweeper game!" },
-    { name: "99 Balls", image: "Images/99BallsEvo.png", path: "99balls/", category: ["puzzle", "action"], description: "Shoot balls to break blocks!" },
-    { name: "Angry Birds Slingshot Frenzy", image: "Images/AngryBirdsSlingshotFrenzy.png", path: "AngryBirds/", category: ["action", "puzzle"], description: "Launch birds at pigs!" },
-    { name: "HexGL Master", image: "Images/HexGL.png", path: "HexGL-master/", category: ["action", "racing"], description: "Futuristic racing game!" },
-    { name: "Adventure Drivers", image: "Images/AdventureDrivers.png", path: "adventure-drivers/", category: ["action", "racing"], description: "Race through adventure tracks!" },
-    { name: "Amazing Strange Rope Police", image: "Images/AmazingStrangeRopePolice.png", path: "amazing-rope-police/", category: ["action", "adventure"], description: "Be a rope police hero!" },
-    { name: "Angry Sharks", image: "Images/AngrySharks.png", path: "angry-sharks/", category: ["action", "survival"], description: "Survive angry sharks!" },
-    { name: "The Backrooms 2D", image: "Images/TheBackrooms2D.png", path: "backrooms-2d/", category: ["horror", "puzzle"], description: "Navigate the backrooms in 2D!" },
-    { name: "Champion Island", image: "Images/GoogleChampionIsland.png", path: "champion-island/", category: ["sports", "adventure"], description: "Google's Champion Island game!" },
-    { name: "Cut The Rope Holiday Gift", image: "Images/CutTheRopeHolidayGift.png", path: "ctr-holiday/", category: ["puzzle", "physics"], description: "Holiday version of Cut The Rope!" },
-    { name: "Connect 3", image: "Images/Connect3.png", path: "connect3/", category: ["puzzle", "strategy"], description: "Connect three or more items!" },
-    { name: "Cut The Rope Time Travel", image: "Images/CutTheRopeTimeTravel.png", path: "ctr-tr/", category: ["puzzle", "physics"], description: "Time travel version of Cut The Rope!" },
-    { name: "MotoX3M Pool Party", image: "Images/MotoX3M3.png", path: "motox3m-pool/", category: ["action", "sports"], description: "MotoX3M pool party edition!" },
-    { name: "MotoX3M Spooky Land", image: "Images/MotoX3M5.png", path: "motox3m-spooky/", category: ["action", "sports"], description: "MotoX3M spooky land edition!" },
-    { name: "Moto X3M Winter", image: "Images/MotoX3M4.png", path: "motox3m-winter/", category: ["action", "sports"], description: "MotoX3M winter edition!" },
-    { name: "Station 141", image: "Images/Station141.png", path: "station-141/", category: ["horror", "puzzle"], description: "Survive station 141!" },
-    { name: "Stickman Hook", image: "Images/StickmanHook.png", path: "stickman-hook/", category: ["action", "puzzle"], description: "Swing as a stickman!" },
-    { name: "Tank Trouble 2", image: "Images/TankTrouble2.png", path: "tank-trouble-2/", category: ["action", "multiplayer"], description: "Battle with tanks!" },
-    { name: "Time Shooter 2", image: "Images/TimeShooter2.png", path: "time-shooter-2/", category: ["action", "shooter"], description: "Time moves only when you move!" },
-    { name: "4 Colors Multiplayer", image: "Images/4ColorsMultiplayer.png", path: "uno/", category: ["multiplayer", "card"], description: "Multiplayer card game!" },
-    { name: "The Bowling Club", image: "Images/TheBowlingClub.png", path: "thebowlingclub/", category: ["sports", "multiplayer"], description: "Bowling with friends!" },
-    { name: "Madalin Stunt Cars 2", image: "Images/MadalinStuntCars2.png", path: "stuntcars/", category: ["action", "racing", "multiplayer"], description: "Perform stunts with cars!" },
-    { name: "Tanuki Sunset", image: "Images/TankuSunset.png", path: "TANUKISUNSET/", category: ["action", "sports"], description: "Skateboard as a tanuki!" },
-    { name: "Music Ball", image: "Images/MusicBall.png", path: "MUSICBALL/", category: ["rhythm", "puzzle"], description: "Bounce to the music!" },
-    { name: "Marble Race Creator", image: "Images/MarbleRaceCreator.png", path: "MARBLERACEMAKER/", category: ["creative", "racing"], description: "Create marble races!" },
-    { name: "Hard Golf", image: "Images/HardGolf.png", path: "HARDGOLF/", category: ["sports", "puzzle"], description: "Challenging golf game!" },
-    { name: "Bongo Cat", image: "Images/BongoCat.png", path: "BANGOCAT/", category: ["music", "rhythm"], description: "Play music as Bongo Cat!" },
-    { name: "CYBER TUNNEL", image: "Images/CyberTunnelEscape.png", path: "CYBERTUNNEL/", category: ["action", "arcade"], description: "Escape the cyber tunnel!" },
-    { name: "Friday Night Funkin' Atsuover", image: "Images/FNFAtsuover.png", path: "ann/", category: ["rhythm", "music"], description: "Friday Night Funkin' Atsuover mod!" },
-    { name: "Friday Night Funkin' B Sides", image: "Images/FNFBSides.png", path: "bsides/", category: ["rhythm", "music"], description: "Friday Night Funkin' B Sides mod!" },
-    { name: "Friday Night Funkin' Deep Sea Date", image: "Images/FNFDeepSeaDate.png", path: "deepseadate/", category: ["rhythm", "music"], description: "Friday Night Funkin' Deep Sea Date mod!" },
-    { name: "Friday Night Funkin' Everywhere At The End Of Funk", image: "Images/FNFEATEOF.png", path: "everywhereattheendoffunk/", category: ["rhythm", "music"], description: "Friday Night Funkin' EATEOF mod!" },
-    { name: "Friday Night Funkin' FlipSide", image: "Images/FNFFlipSide.png", path: "flipside/", category: ["rhythm", "music"], description: "Friday Night Funkin' FlipSide mod!" },
-    { name: "Friday Night Funkin' Hell Beats", image: "Images/FNFHellBeats.png", path: "h3llbeats/", category: ["rhythm", "music"], description: "Friday Night Funkin' Hell Beats mod!" },
-    { name: "Friday Night Funkin' Henry Stickmin", image: "Images/FNFHenryStickmin.png", path: "henry/", category: ["rhythm", "music"], description: "Friday Night Funkin' Henry Stickmin mod!" },
-    { name: "Friday Night Funkin' Hex", image: "Images/FNFHex.png", path: "hex/", category: ["rhythm", "music"], description: "Friday Night Funkin' Hex mod!" },
-    { name: "Friday Night Funkin' Kapi", image: "Images/FNFKapi.png", path: "kapi/", category: ["rhythm", "music"], description: "Friday Night Funkin' Kapi mod!" },
-    { name: "Friday Night Funkin' Shaggy X Matt", image: "Images/FNFShaggyXMatt.png", path: "shaggymatt/", category: ["rhythm", "music"], description: "Friday Night Funkin' Shaggy X Matt mod!" },
-    { name: "Friday Night Funkin' Miku", image: "Images/FNFMiku.png", path: "Miku/", category: ["rhythm", "music"], description: "Friday Night Funkin' Miku mod!" },
-    { name: "Friday Night Funkin' Matt", image: "Images/FNFMatt.png", path: "matt/", category: ["rhythm", "music"], description: "Friday Night Funkin' Matt mod!" },
-    { name: "Friday Night Funkin' Minus", image: "Images/FNFMinus.png", path: "minus/", category: ["rhythm", "music"], description: "Friday Night Funkin' Minus mod!" },
-    { name: "Friday Night Funkin' Monika", image: "Images/FNFMonika.png", path: "monika/", category: ["rhythm", "music"], description: "Friday Night Funkin' Monika mod!" },
-    { name: "Friday Night Funkin' Neo", image: "Images/FNFNeo.png", path: "neo/", category: ["rhythm", "music"], description: "Friday Night Funkin' Neo mod!" },
-    { name: "Friday Night Funkin' Rose Criminal", image: "Images/FNFRoseCriminal.png", path: "rosecriminal/", category: ["rhythm", "music"], description: "Friday Night Funkin' Rose Criminal mod!" },
-    { name: "Friday Night Funkin' Xe", image: "Images/FNFXe.png", path: "XE/", category: ["rhythm", "music"], description: "Friday Night Funkin' Xe mod!" },
-    { name: "Stick Defenders", image: "Images/StickDefenders.png", path: "stickdefenders/", category: ["action", "strategy"], description: "Defend as stickmen!" },
-    { name: "Jelly Truck", image: "Images/JellyTruck.png", path: "jellytruck/", category: ["action", "racing"], description: "Drive a jelly truck!" },
-    { name: "1v1 lol", image: "Images/1v1Lol.png", path: "1v1-lol/", category: ["action", "multiplayer"], description: "Battle in 1v1 matches!" },
-    { name: "Bloxorz", image: "Images/Bloxorz.png", path: "bloxors/", category: ["puzzle", "strategy"], description: "Roll the block to the goal!" },
-    { name: "Ballistic Chickens", image: "Images/BallisticChickens.png", path: "ballistic-chickens/", category: ["action", "puzzle"], description: "Launch ballistic chickens!" },
-    { name: "Dadish", image: "Images/Dadish.png", path: "dadish/", category: ["action", "puzzle"], description: "Help Dadish find his kids!" },
-    { name: "Dadish 2", image: "Images/Dadish2.png", path: "dadish-2/", category: ["action", "puzzle"], description: "More Dadish adventures!" },
-    { name: "Death Run 3D", image: "Images/DeathRun3D.png", path: "deathrun/", category: ["action", "arcade"], description: "Survive the death run!" },
-    { name: "Death Soul", image: "Images/DeathSoul.png", path: "deathsoul/", category: ["horror", "action"], description: "Navigate as a death soul!" },
-    { name: "Doge 2048", image: "Images/Doge2048.png", path: "doge2048/", category: ["puzzle", "arcade"], description: "2048 with doge theme!" },
-    { name: "Duck Life", image: "Images/DuckLife.png", path: "duck-life/", category: ["sports", "simulation"], description: "Train your duck to be a champion!" },
-    { name: "Duck Life 2", image: "Images/DuckLife2.png", path: "duck-life-2/", category: ["sports", "simulation"], description: "More duck training adventures!" },
-    { name: "Duck Life 3", image: "Images/DuckLife3.png", path: "duck-life-3/", category: ["sports", "simulation"], description: "Evolution in Duck Life!" },
-    { name: "Duck Life 4", image: "Images/DuckLife4.png", path: "duck-life-4/", category: ["sports", "simulation"], description: "Ultimate duck training!" },
-    { name: "Earn To Die 2012", image: "Images/EarnToDie2012.png", path: "earn-to-die/", category: ["action", "racing"], description: "Drive through zombies!" },
-    { name: "Eat Small Fishes", image: "Images/EatSmallFishes.png", path: "eat-small-fishes/", category: ["action", "arcade"], description: "Eat smaller fish to grow!" },
-    { name: "WebGL Fluid Simulation", image: "Images/WebGLFluidSimulation.png", path: "fluid-simulator/", category: ["simulation", "creative"], description: "Interactive fluid simulation!" },
-    { name: "Basket Random", image: "Images/BasketRandom.png", path: "basket-random/", category: ["sports", "multiplayer"], description: "Random basketball fun!" },
-    { name: "Bejeweled", image: "Images/Bejeweled.png", path: "bejeweled/", category: ["puzzle", "arcade"], description: "Match gems in Bejeweled!" },
-    { name: "Breaking The Bank", image: "Images/BreakingTheBank.png", path: "breakingthebank/", category: ["puzzle", "adventure"], description: "Find creative ways to break the bank!" },
-    { name: "Cannon Basketball 4", image: "Images/CannonBasketball4.png", path: "cannon-basketball-4/", category: ["puzzle", "sports"], description: "Shoot basketballs with cannons!" },
-    { name: "Contre Jour", image: "Images/ContreJour.png", path: "ContreJour/", category: ["puzzle", "physics"], description: "Manipulate the environment to guide the creature!" },
-    { name: "DOOMORI", image: "Images/Doomori.png", path: "DOOMORI/", category: ["horror", "puzzle"], description: "Doom-inspired horror game!" },
-    { name: "Flappy Zig Zag", image: "Images/FlappyZigZag.png", path: "Flappy-ZigZag/", category: ["arcade", "action"], description: "Flappy bird with zig zag movement!" },
-    { name: "Gons.io", image: "Images/Gons.io.png", path: "gons/", category: ["multiplayer", "action"], description: "Battle against other players!" },
-    { name: "House Of Hazards", image: "Images/HouseOfHazards.png", path: "houseofhazards/", category: ["action", "multiplayer"], description: "Navigate through hazardous house!" },
-    { name: "Idle Merge Car And Race", image: "Images/IdleMergeCarAndRace.png", path: "idle-merge-car-and-race/", category: ["idle", "racing"], description: "Merge cars and race!" },
-    { name: "Just Fall LOL", image: "Images/JustFallLol.png", path: "justfall/", category: ["multiplayer", "action"], description: "Survive falling platforms!" },
-    { name: "JustOneBoss", image: "Images/JustOneBoss.png", path: "justoneboss/", category: ["action", "puzzle"], description: "Battle against one boss!" },
-    { name: "Mini Battle City", image: "Images/MiniBattleCity.png", path: "BattleCityMini/", category: ["action", "multiplayer"], description: "Mini tank battles!" },
-    { name: "The Impossible Quiz", image: "Images/TheImpossibleQuiz.png", path: "impossiblequiz/", category: ["puzzle", "quiz"], description: "Answer impossible questions!" },
-    { name: "Fireboy and Watergirl 1: Forest Temple", image: "Images/FireBoyWaterGirl1.jpg", path: "FBWG1", category: ["puzzle", "adventure", "multiplayer"], description: "Guide Fireboy and Watergirl through the temple!" }
+    { name: "Happy Wheels", image: "Images/HappyWheels.png", path: "580301-HappyWheels/", category: ["action"], description: "Navigate through obstacle courses!" },
+    { name: "Papa's Hot Doggeria", image: "Images/PapasHotDoggeria.jpg", path: "hotdoggeria/", category: ["puzzle"], description: "Run a hot dog stand at a baseball stadium!" },
+    { name: "Jetpack Joyride", image: "Images/JetpackJoyride.png", path: "jetpackjoyride/", category: ["action"], description: "Fly with a jetpack and avoid obstacles!" },
+    { name: "Knife Hit", image: "Images/KnifeHit.png", path: "knifehit/", category: ["action"], description: "Throw knives at targets without hitting other knives!" },
+    { name: "Apple Knight", image: "Images/AppleKnight.png", path: "knight/", category: ["action"], description: "Embark on an adventure as Apple Knight!" },
+    { name: "Lose95", image: "Images/Lose95.png", path: "lose95/", category: ["puzzle"], description: "Experience Windows 95 in a new way!" },
+    { name: "Papa Louie", image: "Images/PapaLouie.jpeg", path: "louie/", category: ["action"], description: "Rescue customers from mutant food monsters!" },
+    { name: "Super Mario Bros. Versus", image: "Images/SuperMarioBrosVersus.jpg", path: "mariovsluigi/", category: ["multiplayer"], description: "Mario vs Luigi in a battle!" },
+    { name: "Minecraft Classic", image: "Images/MinecraftClassic.png", path: "mcbeta0.30/", category: ["puzzle"], description: "Classic Minecraft in your browser!" },
+    { name: "The Open House", image: "Images/TheOpenHouse.jpg", path: "open/", category: ["horror"], description: "Explore an open house with secrets!" },
+    { name: "Papa's Burgeria", image: "Images/PapasBurgeria.jpg", path: "papasb/", category: ["puzzle"], description: "Run a burger restaurant!" },
+    { name: "Papa's Pizzeria", image: "Images/PapasPizzeria.jpg", path: "pizzeria/", category: ["puzzle"], description: "Make and serve pizzas to customers!" },
+    { name: "Portaboy", image: "Images/Portaboy.jpg", path: "portaboy/", category: ["puzzle"], description: "Play mini-games on a virtual console!" },
+    { name: "Pressing Under Pressure", image: "Images/PressingUnderPressure.jpg", path: "pressing/", category: ["puzzle"], description: "Press buttons under pressure!" },
+    { name: "Retro Bowl", image: "Images/RetroBowl.jpg", path: "retro-bowl/", category: ["sports"], description: "Lead your team to victory in Retro Bowl!" },
+    { name: "Robogo", image: "Images/Robogo.png", path: "robogo/", category: ["puzzle"], description: "Guide robots to their destinations!" },
+    { name: "Run 3", image: "Images/Run3.png", path: "Run3/", category: ["action"], description: "Run through space tunnels!" },
+    { name: "Bad Time Simulator (Sans Fight)", image: "Images/BadTimeSimulator.png", path: "sansfight/", category: ["action"], description: "Battle Sans from Undertale!" },
+    { name: "Sketchbook", image: "Images/Sketchbook.jpg", path: "sketchbook/", category: ["puzzle"], description: "Draw and create in your sketchbook!" },
+    { name: "Super Mario 64", image: "Images/SuperMario64.jpg", path: "sm64/", category: ["action"], description: "Classic Mario 64 in your browser!" },
+    { name: "Snake", image: "Images/Snake.png", path: "snake/", category: ["action"], description: "Classic snake game!" },
+    { name: "Superhot", image: "Images/Superhot.png", path: "superhot/", category: ["action"], description: "Time moves only when you move!" },
+    { name: "Deepest Sword", image: "Images/DeepestSword.jpg", path: "sword/", category: ["puzzle"], description: "Use your sword to reach the dragon's heart!" },
+    { name: "Papa's Taco Mia", image: "Images/PapasTacoMia.png", path: "tacomia/", category: ["puzzle"], description: "Run a taco restaurant!" },
+    { name: "Tunnel Rush", image: "Images/TunnelRush.png", path: "tunnelrush/", category: ["action"], description: "Navigate through a tunnel at high speed!" },
+    { name: "We Become What We Behold", image: "Images/WeBecomeWhatWeBehold.jpg", path: "wbwwb/", category: ["puzzle"], description: "A game about media cycles!" },
+    { name: "Wordle Unlimited", image: "Images/Wordle.png", path: "wordle/", category: ["puzzle"], description: "Guess the word in 6 tries!" },
+    { name: "Wounded Summer", image: "Images/WoundedSummer.png", path: "wounded-summer/", category: ["action"], description: "Survive the summer!" },
+    { name: "Xx142-b2exe", image: "Images/Xx142-b2exe.png", path: "xx142-b2exe/", category: ["puzzle"], description: "Decode the mysterious file!" },
+    { name: "Among Us", image: "Images/AmongUs.jpg", path: "amongus/", category: ["multiplayer"], description: "Find the impostor among the crew!" },
+    { name: "Block Blast", image: "Images/BlockBlast.png", path: "blockblast/", category: ["puzzle"], description: "Blast blocks and clear the board!" },
+    { name: "Big Tower Tiny Square", image: "Images/BigTowerTinySquare.png", path: "bigtowertinysquare/", category: ["puzzle"], description: "Climb the big tower!" },
+    { name: "Blumgi Slime", image: "Images/BlumjiSlime.jpg", path: "blumgislime/", category: ["action"], description: "Jump and bounce as a slime!" },
+    { name: "Box Chase", image: "Images/BoxChase.png", path: "boxchase/", category: ["puzzle"], description: "Chase boxes and solve puzzles!" },
+    { name: "Capybara Clicker", image: "Images/CapybaraClicker.png", path: "capybaraclicker/", category: ["idle"], description: "Click capybaras and build your capybara empire!" },
+    { name: "CCMMYY", image: "Images/CCMMYY.png", path: "ccmmyy/", category: ["puzzle"], description: "Solve the color puzzle!" },
+    { name: "Impossible Cookie Clicker", image: "Images/ImpossibleCookieClicker.png", path: "impossiblecookieclicker/", category: ["idle"], description: "The impossible version of Cookie Clicker!" },
+    { name: "Breakout", image: "Images/Breakout.png", path: "breakout/", category: ["action"], description: "Classic breakout game!" },
+    { name: "Checkers", image: "Images/Checkers.png", path: "checkers/", category: ["puzzle"], description: "Classic checkers game!" },
+    { name: "Chess", image: "Images/Chess.png", path: "chess/", category: ["puzzle"], description: "Classic chess game!" },
+    { name: "Cluster Rush", image: "Images/ClusterRush.jpg", path: "clusterrush/", category: ["action"], description: "Navigate through clusters at high speed!" },
+    { name: "Cut The Rope", image: "Images/CutTheRope.png", path: "cuttherope/", category: ["puzzle"], description: "Cut ropes to feed candy to Om Nom!" },
+    { name: "Deadly Descent", image: "Images/DeadlyDescent.png", path: "deadlydescent/", category: ["action"], description: "Descend through dangerous terrain!" },
+    { name: "Doge Miner 2", image: "Images/DogeMiner2.png", path: "dogeminer2/", category: ["idle"], description: "Mine even more dogecoins in the sequel!" },
+    { name: "Eggy Car", image: "Images/EggyCar.png", path: "eggycar/", category: ["puzzle"], description: "Drive a car with an egg on top!" },
+    { name: "Getting Over It", image: "Images/GettingOverIt.png", path: "gettingoveritscratch/", category: ["puzzle"], description: "Climb a mountain with a hammer!" },
+    { name: "Gladihoppers", image: "Images/GladiHoppers.png", path: "gladihoppers/", category: ["sports"], description: "Battle as a gladiator!" },
+    { name: "Google Baseball", image: "Images/GoogleBaseball.jpeg", path: "googlebaseball/", category: ["sports"], description: "Google's baseball game!" },
+    { name: "Five Nights at Freddy's 2", image: "Images/FNAF2.png", path: "fnaf2/", category: ["horror"], description: "Survive five nights at Freddy's 2!" },
+    { name: "Drive Mad", image: "Images/DriveMad.png", path: "drivemad/", category: ["action"], description: "Drive through challenging tracks!" },
+    { name: "Drift Boss", image: "Images/DriftBoss.png", path: "driftboss/", category: ["sports"], description: "Drift through corners!" },
+    { name: "Five Nights at Winston's", image: "Images/FiveNightsAtWinstons.png", path: "fnaw/", category: ["horror"], description: "Survive five nights at Winston's!" },
+    { name: "Slither.io Remake", image: "Images/Slither.ioRemake.png", path: "slitherio/", category: ["multiplayer"], description: "Grow your snake by eating pellets!" },
+    { name: "Snow Rider 3D", image: "Images/SnowRider3D.png", path: "snowrider3d/", category: ["sports"], description: "Snowboard down the mountain!" },
+    { name: "Stack", image: "Images/Stack.png", path: "stack/", category: ["action"], description: "Stack blocks as high as you can!" },
+    { name: "Subway Surfers San Francisco", image: "Images/SubwaySurfersSanFrancisco.png", path: "subwaysurfers/", category: ["action"], description: "Surf through San Francisco!" },
+    { name: "There Is No Game", image: "Images/ThereIsNoGame.png", path: "thereisnogame/", category: ["puzzle"], description: "A game that insists it's not a game!" },
+    { name: "Tiny Cars", image: "Images/TinyCars.png", path: "tinycars/", category: ["action"], description: "Race tiny cars!" },
+    { name: "Tiny Fishing", image: "Images/TinyFishing.png", path: "tinyfishing/", category: ["action"], description: "Catch tiny fish!" },
+    { name: "Unicycle Hero", image: "Images/UnicycleHero.png", path: "unicyclehero/", category: ["sports"], description: "Balance on a unicycle!" },
+    { name: "Wolfenstein 3D", image: "Images/Wolfenstein3D.png", path: "wolfenstein3d/", category: ["action"], description: "Classic 3D shooter game!" },
+    { name: "Idle Ants", image: "Images/IdleAnts.png", path: "idleants/", category: ["idle"], description: "Manage an ant colony!" },
+    { name: "Idle Breakout", image: "Images/IdleBreakout.png", path: "idlebreakout/", category: ["idle"], description: "Idle version of breakout!" },
+    { name: "Idle Dice", image: "Images/IdleDice.png", path: "idledice/", category: ["idle"], description: "Roll dice and earn points!" },
+    { name: "Mari0", image: "Images/Mari0.png", path: "mari0/", category: ["puzzle"], description: "Mario with portal gun mechanics!" },
+    { name: "MotoX3M", image: "Images/MotoX3M.png", path: "motox3m/", category: ["sports"], description: "Complete motocross challenges!" },
+    { name: "OvO", image: "Images/OvO.png", path: "ovo/", category: ["puzzle"], description: "Navigate through challenging levels!" },
+    { name: "Race Survival", image: "Images/RaceSurvival.png", path: "racesurvival/", category: ["action"], description: "Survive the race!" },
+    { name: "Recoil", image: "Images/Recoil.png", path: "recoil/", category: ["action"], description: "Shoot and recoil to move!" },
+    { name: "RRGGBB", image: "Images/RRGGBB.png", path: "rrggbb/", category: ["puzzle"], description: "Color-based puzzle game!" },
+    { name: "Resizer", image: "Images/Resizer.png", path: "resizer/", category: ["puzzle"], description: "Resize objects to solve puzzles!" },
+    { name: "Polytrack", image: "Images/Polytrack.png", path: "polytrack/", category: ["sports"], description: "Race on polygonal tracks!" },
+    { name: "Googlefeud", image: "Images/Googlefeud.png", path: "googlefeud/", category: ["puzzle"], description: "Guess Google search suggestions!" },
+    { name: "Let's Surf", image: "Images/Letssurf.png", path: "letssurf/", category: ["sports"], description: "Surf the waves!" },
+    { name: "Minecraft 1.5.2", image: "Images/Minecraft1.5.2.png", path: "AWeb/", category: ["puzzle"], description: "Play Minecraft 1.5.2 in your browser!" },
+    { name: "Minecraft 1.8.8", image: "Images/Minecraft1.8.8.png", path: "minecraft18/", category: ["puzzle"], description: "Play Minecraft 1.8.8 in your browser!" },
+    { name: "Monster Tracks", image: "Images/Monstertracks.png", path: "monstertracks/", category: ["sports"], description: "Race on monster tracks!" },
+    { name: "MotoX3M 2", image: "Images/MotoX3M2.png", path: "motox3m2/", category: ["sports"], description: "More motocross challenges!" },
+    { name: "Grind Craft", image: "Images/GrindCraft.png", path: "grindcraft/", category: ["idle"], description: "Grind resources and craft items!" },
+    { name: "Pacman", image: "Images/Pacman.png", path: "pacman/", category: ["action"], description: "Classic Pacman game!" },
+    { name: "Plants Vs. Zombies", image: "Images/PVZ.png", path: "plantsvszombies/", category: ["puzzle"], description: "Defend your home from zombies!" },
+    { name: "Pool", image: "Images/Pool.png", path: "pool/", category: ["sports"], description: "Classic pool game!" },
+    { name: "Minecraft Tower Defense", image: "Images/mctd.png", path: "mctd/", category: ["puzzle"], description: "Tower defense with Minecraft theme!" },
+    { name: "Minecraft Tower Defense 2", image: "Images/mctd2.jpg", path: "mctd2/", category: ["puzzle"], description: "More Minecraft tower defense!" },
+    { name: "Draw The Hill", image: "Images/DrawTheHill.png", path: "draw-the-hill/", category: ["puzzle"], description: "Draw hills to guide the car!" },
+    { name: "Five Nights at Freddy's", image: "Images/Fnaf.png", path: "FNAF1/index.html", category: ["horror"], description: "Survive five nights at Freddy's!" },
+    { name: "Five Nights at Freddy's 3", image: "Images/Fnaf3.png", path: "FNAF3/index.html", category: ["horror"], description: "Survive five nights at Freddy's 3!" },
+    { name: "Kitchen Gun", image: "Images/KitchenGun.png", path: "kitchen-gun-game/", category: ["action"], description: "Shoot with a kitchen gun!" },
+    { name: "Noob Steve Parkour", image: "Images/NoobSteveParkour.png", path: "noob-steve-parkour/", category: ["puzzle"], description: "Parkour as Noob Steve!" },
+    { name: "Polybranch", image: "Images/Polybranch.png", path: "polybranch/", category: ["puzzle"], description: "Grow branches without colliding!" },
+    { name: "Popcat", image: "Images/Popcat.png", path: "popcat-classic/", category: ["action"], description: "Click the popcat!" },
+    { name: "Push Your Luck", image: "Images/PushYourLuck.png", path: "push-your-luck/", category: ["puzzle"], description: "Test your luck!" },
+    { name: "The Heist", image: "Images/TheHeist.png", path: "theheist/", category: ["puzzle"], description: "Plan and execute a heist!" },
+    { name: "Tomb Of The Mask", image: "Images/TombOfTheMask.png", path: "tomb/", category: ["action"], description: "Navigate through the tomb!" },
+    { name: "Mine Sweeper", image: "Images/MineSweepers.png", path: "minesweeper/", category: ["puzzle"], description: "Classic minesweeper game!" },
+    { name: "99 Balls", image: "Images/99BallsEvo.png", path: "99balls/", category: ["puzzle"], description: "Shoot balls to break blocks!" },
+    { name: "Angry Birds Slingshot Frenzy", image: "Images/AngryBirdsSlingshotFrenzy.png", path: "AngryBirds/", category: ["puzzle"], description: "Launch birds at pigs!" },
+    { name: "HexGL Master", image: "Images/HexGL.png", path: "HexGL-master/", category: ["sports"], description: "Futuristic racing game!" },
+    { name: "Adventure Drivers", image: "Images/AdventureDrivers.png", path: "adventure-drivers/", category: ["sports"], description: "Race through adventure tracks!" },
+    { name: "Amazing Strange Rope Police", image: "Images/AmazingStrangeRopePolice.png", path: "amazing-rope-police/", category: ["action"], description: "Be a rope police hero!" },
+    { name: "Angry Sharks", image: "Images/AngrySharks.png", path: "angry-sharks/", category: ["action"], description: "Survive angry sharks!" },
+    { name: "The Backrooms 2D", image: "Images/TheBackrooms2D.png", path: "backrooms-2d/", category: ["horror"], description: "Navigate the backrooms in 2D!" },
+    { name: "Champion Island", image: "Images/GoogleChampionIsland.png", path: "champion-island/", category: ["sports"], description: "Google's Champion Island game!" },
+    { name: "Cut The Rope Holiday Gift", image: "Images/CutTheRopeHolidayGift.png", path: "ctr-holiday/", category: ["puzzle"], description: "Holiday version of Cut The Rope!" },
+    { name: "Connect 3", image: "Images/Connect3.png", path: "connect3/", category: ["puzzle"], description: "Connect three or more items!" },
+    { name: "Cut The Rope Time Travel", image: "Images/CutTheRopeTimeTravel.png", path: "ctr-tr/", category: ["puzzle"], description: "Time travel version of Cut The Rope!" },
+    { name: "MotoX3M Pool Party", image: "Images/MotoX3M3.png", path: "motox3m-pool/", category: ["sports"], description: "MotoX3M pool party edition!" },
+    { name: "MotoX3M Spooky Land", image: "Images/MotoX3M5.png", path: "motox3m-spooky/", category: ["sports"], description: "MotoX3M spooky land edition!" },
+    { name: "Moto X3M Winter", image: "Images/MotoX3M4.png", path: "motox3m-winter/", category: ["sports"], description: "MotoX3M winter edition!" },
+    { name: "Station 141", image: "Images/Station141.png", path: "station-141/", category: ["horror"], description: "Survive station 141!" },
+    { name: "Stickman Hook", image: "Images/StickmanHook.png", path: "stickman-hook/", category: ["puzzle"], description: "Swing as a stickman!" },
+    { name: "Tank Trouble 2", image: "Images/TankTrouble2.png", path: "tank-trouble-2/", category: ["multiplayer"], description: "Battle with tanks!" },
+    { name: "Time Shooter 2", image: "Images/TimeShooter2.png", path: "time-shooter-2/", category: ["action"], description: "Time moves only when you move!" },
+    { name: "4 Colors Multiplayer", image: "Images/4ColorsMultiplayer.png", path: "uno/", category: ["multiplayer"], description: "Multiplayer card game!" },
+    { name: "The Bowling Club", image: "Images/TheBowlingClub.png", path: "thebowlingclub/", category: ["sports"], description: "Bowling with friends!" },
+    { name: "Madalin Stunt Cars 2", image: "Images/MadalinStuntCars2.png", path: "stuntcars/", category: ["multiplayer"], description: "Perform stunts with cars!" },
+    { name: "Tanuki Sunset", image: "Images/TankuSunset.png", path: "TANUKISUNSET/", category: ["sports"], description: "Skateboard as a tanuki!" },
+    { name: "Music Ball", image: "Images/MusicBall.png", path: "MUSICBALL/", category: ["puzzle"], description: "Bounce to the music!" },
+    { name: "Marble Race Creator", image: "Images/MarbleRaceCreator.png", path: "MARBLERACEMAKER/", category: ["puzzle"], description: "Create marble races!" },
+    { name: "Hard Golf", image: "Images/HardGolf.png", path: "HARDGOLF/", category: ["sports"], description: "Challenging golf game!" },
+    { name: "Bongo Cat", image: "Images/BongoCat.png", path: "BANGOCAT/", category: ["puzzle"], description: "Play music as Bongo Cat!" },
+    { name: "CYBER TUNNEL", image: "Images/CyberTunnelEscape.png", path: "CYBERTUNNEL/", category: ["action"], description: "Escape the cyber tunnel!" },
+    { name: "Friday Night Funkin' Atsuover", image: "Images/FNFAtsuover.png", path: "ann/", category: ["puzzle"], description: "Friday Night Funkin' Atsuover mod!" },
+    { name: "Friday Night Funkin' B Sides", image: "Images/FNFBSides.png", path: "bsides/", category: ["puzzle"], description: "Friday Night Funkin' B Sides mod!" },
+    { name: "Friday Night Funkin' Deep Sea Date", image: "Images/FNFDeepSeaDate.png", path: "deepseadate/", category: ["puzzle"], description: "Friday Night Funkin' Deep Sea Date mod!" },
+    { name: "Friday Night Funkin' Everywhere At The End Of Funk", image: "Images/FNFEATEOF.png", path: "everywhereattheendoffunk/", category: ["puzzle"], description: "Friday Night Funkin' EATEOF mod!" },
+    { name: "Friday Night Funkin' FlipSide", image: "Images/FNFFlipSide.png", path: "flipside/", category: ["puzzle"], description: "Friday Night Funkin' FlipSide mod!" },
+    { name: "Friday Night Funkin' Hell Beats", image: "Images/FNFHellBeats.png", path: "h3llbeats/", category: ["puzzle"], description: "Friday Night Funkin' Hell Beats mod!" },
+    { name: "Friday Night Funkin' Henry Stickmin", image: "Images/FNFHenryStickmin.png", path: "henry/", category: ["puzzle"], description: "Friday Night Funkin' Henry Stickmin mod!" },
+    { name: "Friday Night Funkin' Hex", image: "Images/FNFHex.png", path: "hex/", category: ["puzzle"], description: "Friday Night Funkin' Hex mod!" },
+    { name: "Friday Night Funkin' Kapi", image: "Images/FNFKapi.png", path: "kapi/", category: ["puzzle"], description: "Friday Night Funkin' Kapi mod!" },
+    { name: "Friday Night Funkin' Shaggy X Matt", image: "Images/FNFShaggyXMatt.png", path: "shaggymatt/", category: ["puzzle"], description: "Friday Night Funkin' Shaggy X Matt mod!" },
+    { name: "Friday Night Funkin' Miku", image: "Images/FNFMiku.png", path: "Miku/", category: ["puzzle"], description: "Friday Night Funkin' Miku mod!" },
+    { name: "Friday Night Funkin' Matt", image: "Images/FNFMatt.png", path: "matt/", category: ["puzzle"], description: "Friday Night Funkin' Matt mod!" },
+    { name: "Friday Night Funkin' Minus", image: "Images/FNFMinus.png", path: "minus/", category: ["puzzle"], description: "Friday Night Funkin' Minus mod!" },
+    { name: "Friday Night Funkin' Monika", image: "Images/FNFMonika.png", path: "monika/", category: ["puzzle"], description: "Friday Night Funkin' Monika mod!" },
+    { name: "Friday Night Funkin' Neo", image: "Images/FNFNeo.png", path: "neo/", category: ["puzzle"], description: "Friday Night Funkin' Neo mod!" },
+    { name: "Friday Night Funkin' Rose Criminal", image: "Images/FNFRoseCriminal.png", path: "rosecriminal/", category: ["puzzle"], description: "Friday Night Funkin' Rose Criminal mod!" },
+    { name: "Friday Night Funkin' Xe", image: "Images/FNFXe.png", path: "XE/", category: ["puzzle"], description: "Friday Night Funkin' Xe mod!" },
+    { name: "Stick Defenders", image: "Images/StickDefenders.png", path: "stickdefenders/", category: ["puzzle"], description: "Defend as stickmen!" },
+    { name: "Jelly Truck", image: "Images/JellyTruck.png", path: "jellytruck/", category: ["action"], description: "Drive a jelly truck!" },
+    { name: "1v1 lol", image: "Images/1v1Lol.png", path: "1v1-lol/", category: ["multiplayer"], description: "Battle in 1v1 matches!" },
+    { name: "Bloxorz", image: "Images/Bloxorz.png", path: "bloxors/", category: ["puzzle"], description: "Roll the block to the goal!" },
+    { name: "Ballistic Chickens", image: "Images/BallisticChickens.png", path: "ballistic-chickens/", category: ["puzzle"], description: "Launch ballistic chickens!" },
+    { name: "Dadish", image: "Images/Dadish.png", path: "dadish/", category: ["puzzle"], description: "Help Dadish find his kids!" },
+    { name: "Dadish 2", image: "Images/Dadish2.png", path: "dadish-2/", category: ["puzzle"], description: "More Dadish adventures!" },
+    { name: "Death Run 3D", image: "Images/DeathRun3D.png", path: "deathrun/", category: ["action"], description: "Survive the death run!" },
+    { name: "Death Soul", image: "Images/DeathSoul.png", path: "deathsoul/", category: ["horror"], description: "Navigate as a death soul!" },
+    { name: "Doge 2048", image: "Images/Doge2048.png", path: "doge2048/", category: ["puzzle"], description: "2048 with doge theme!" },
+    { name: "Duck Life", image: "Images/DuckLife.png", path: "duck-life/", category: ["sports"], description: "Train your duck to be a champion!" },
+    { name: "Duck Life 2", image: "Images/DuckLife2.png", path: "duck-life-2/", category: ["sports"], description: "More duck training adventures!" },
+    { name: "Duck Life 3", image: "Images/DuckLife3.png", path: "duck-life-3/", category: ["sports"], description: "Evolution in Duck Life!" },
+    { name: "Duck Life 4", image: "Images/DuckLife4.png", path: "duck-life-4/", category: ["sports"], description: "Ultimate duck training!" },
+    { name: "Earn To Die 2012", image: "Images/EarnToDie2012.png", path: "earn-to-die/", category: ["action"], description: "Drive through zombies!" },
+    { name: "Eat Small Fishes", image: "Images/EatSmallFishes.png", path: "eat-small-fishes/", category: ["action"], description: "Eat smaller fish to grow!" },
+    { name: "WebGL Fluid Simulation", image: "Images/WebGLFluidSimulation.png", path: "fluid-simulator/", category: ["puzzle"], description: "Interactive fluid simulation!" },
+    { name: "Basket Random", image: "Images/BasketRandom.png", path: "basket-random/", category: ["sports"], description: "Random basketball fun!" },
+    { name: "Bejeweled", image: "Images/Bejeweled.png", path: "bejeweled/", category: ["puzzle"], description: "Match gems in Bejeweled!" },
+    { name: "Breaking The Bank", image: "Images/BreakingTheBank.png", path: "breakingthebank/", category: ["puzzle"], description: "Find creative ways to break the bank!" },
+    { name: "Cannon Basketball 4", image: "Images/CannonBasketball4.png", path: "cannon-basketball-4/", category: ["puzzle"], description: "Shoot basketballs with cannons!" },
+    { name: "Contre Jour", image: "Images/ContreJour.png", path: "ContreJour/", category: ["puzzle"], description: "Manipulate the environment to guide the creature!" },
+    { name: "DOOMORI", image: "Images/Doomori.png", path: "DOOMORI/", category: ["horror"], description: "Doom-inspired horror game!" },
+    { name: "Flappy Zig Zag", image: "Images/FlappyZigZag.png", path: "Flappy-ZigZag/", category: ["action"], description: "Flappy bird with zig zag movement!" },
+    { name: "Gons.io", image: "Images/Gons.io.png", path: "gons/", category: ["multiplayer"], description: "Battle against other players!" },
+    { name: "House Of Hazards", image: "Images/HouseOfHazards.png", path: "houseofhazards/", category: ["multiplayer"], description: "Navigate through hazardous house!" },
+    { name: "Idle Merge Car And Race", image: "Images/IdleMergeCarAndRace.png", path: "idle-merge-car-and-race/", category: ["idle"], description: "Merge cars and race!" },
+    { name: "Just Fall LOL", image: "Images/JustFallLol.png", path: "justfall/", category: ["multiplayer"], description: "Survive falling platforms!" },
+    { name: "JustOneBoss", image: "Images/JustOneBoss.png", path: "justoneboss/", category: ["puzzle"], description: "Battle against one boss!" },
+    { name: "Mini Battle City", image: "Images/MiniBattleCity.png", path: "BattleCityMini/", category: ["multiplayer"], description: "Mini tank battles!" },
+    { name: "The Impossible Quiz", image: "Images/TheImpossibleQuiz.png", path: "impossiblequiz/", category: ["puzzle"], description: "Answer impossible questions!" },
+    { name: "Fireboy and Watergirl 1: Forest Temple", image: "Images/FireBoyWaterGirl1.jpg", path: "FBWG1", category: ["puzzle"], description: "Guide Fireboy and Watergirl through the temple!" }
   ];
 
   // State management
   const state = {
     favorites: JSON.parse(localStorage.getItem("agic_favorites")) || [],
     currentView: "all",
+    currentCategory: "all",
     featuredIndex: 0,
     recentlyPlayed: JSON.parse(localStorage.getItem("agic_recentlyPlayed")) || [],
     gameRatings: JSON.parse(localStorage.getItem("agic_ratings")) || {},
@@ -1353,7 +1432,7 @@
     fullscreenBtn: document.getElementById("fullscreenBtn"),
     topBar: document.querySelector(".top-bar"),
     gameLoading: document.getElementById("gameLoading"),
-    gamesSectionTitle: document.getElementById("gamesSectionTitle"),
+    gamesTitle: document.getElementById("gamesTitle"),
     gamesCount: document.getElementById("gamesCount"),
     loadingMessage: document.getElementById("loadingMessage"),
     shortcutsModal: document.getElementById("shortcutsModal"),
@@ -1364,7 +1443,8 @@
     featuredTitle: document.getElementById("featuredTitle"),
     featuredDescription: document.getElementById("featuredDescription"),
     loadingPercentage: document.getElementById("loadingPercentage"),
-    loadingProgress: document.getElementById("loadingProgress")
+    loadingProgress: document.getElementById("loadingProgress"),
+    categoryFilters: document.getElementById("categoryFilters")
   };
 
   // Initialize featured games
@@ -1384,6 +1464,62 @@
   let featuredGame = featuredGames[0];
   let featuredInterval;
   let searchTimeout;
+
+  // Define main categories - reduced to 7 essential ones
+  const mainCategories = [
+    { name: "all", icon: "fas fa-th", label: "All" },
+    { name: "action", icon: "fas fa-bolt", label: "Action" },
+    { name: "puzzle", icon: "fas fa-puzzle-piece", label: "Puzzle" },
+    { name: "sports", icon: "fas fa-football-ball", label: "Sports" },
+    { name: "idle", icon: "fas fa-coins", label: "Idle" },
+    { name: "multiplayer", icon: "fas fa-users", label: "Multiplayer" },
+    { name: "horror", icon: "fas fa-ghost", label: "Horror" }
+  ];
+
+  // Initialize category filters
+  function initCategoryFilters() {
+    const categoryFilters = elements.categoryFilters;
+    
+    // Add category filters
+    mainCategories.forEach(category => {
+      const count = category.name === "all" 
+        ? games.length 
+        : games.filter(game => game.category && game.category.includes(category.name)).length;
+      
+      const filter = document.createElement("button");
+      filter.className = "category-filter";
+      filter.setAttribute("data-category", category.name);
+      filter.innerHTML = `<i class="${category.icon}"></i> ${category.label} <span class="count">${count}</span>`;
+      filter.addEventListener("click", () => filterByCategory(category.name));
+      categoryFilters.appendChild(filter);
+    });
+    
+    // Set "All" as active by default
+    document.querySelector('[data-category="all"]').classList.add('active');
+  }
+
+  // Filter games by category
+  function filterByCategory(category) {
+    state.currentCategory = category;
+    state.visibleGames = 24; // Reset visible games count
+    
+    // Update active filter
+    document.querySelectorAll(".category-filter").forEach(filter => {
+      if (filter.getAttribute("data-category") === category) {
+        filter.classList.add("active");
+      } else {
+        filter.classList.remove("active");
+      }
+    });
+    
+    // Update title
+    const categoryData = mainCategories.find(cat => cat.name === category);
+    if (categoryData) {
+      elements.gamesTitle.textContent = categoryData.label + " Games";
+    }
+    
+    renderGames();
+  }
 
   // Loading messages
   const loadingMessages = [
@@ -1412,6 +1548,9 @@
     setTimeout(() => {
       // Setup featured game
       updateFeaturedGame();
+
+      // Initialize category filters
+      initCategoryFilters();
 
       // Render games
       showAllGames();
@@ -1565,6 +1704,13 @@
       );
     }
     
+    // Filter by category
+    if (state.currentCategory !== "all") {
+      gamesToShow = gamesToShow.filter(game => 
+        game.category && game.category.includes(state.currentCategory)
+      );
+    }
+    
     // Filter by favorites if needed
     if (state.currentView === "favorites") {
       gamesToShow = gamesToShow.filter(game => 
@@ -1575,8 +1721,7 @@
     // Sort games alphabetically
     gamesToShow.sort((a, b) => a.name.localeCompare(b.name));
     
-    // Update section title and count
-    elements.gamesSectionTitle.textContent = state.currentView === "favorites" ? "Favorites" : "All Games";
+    // Update games count
     elements.gamesCount.textContent = `(${gamesToShow.length})`;
     
     // Clear container
@@ -1704,7 +1849,19 @@
   // Show all games
   function showAllGames() {
     state.currentView = "all";
+    state.currentCategory = "all";
     state.visibleGames = 24; // Reset visible games count
+    
+    // Reset category filter
+    document.querySelectorAll(".category-filter").forEach(filter => {
+      if (filter.getAttribute("data-category") === "all") {
+        filter.classList.add("active");
+      } else {
+        filter.classList.remove("active");
+      }
+    });
+    
+    elements.gamesTitle.textContent = "All Games";
     renderGames();
     // Show featured section when viewing all games
     elements.featuredSection.style.display = 'block';
@@ -1714,6 +1871,7 @@
   function showFavorites() {
     state.currentView = "favorites";
     state.visibleGames = 24; // Reset visible games count
+    elements.gamesTitle.textContent = "Favorites";
     renderGames();
     // Hide featured section when viewing favorites
     elements.featuredSection.style.display = 'none';
