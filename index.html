@@ -296,8 +296,9 @@
     /* Featured Section */
     .featured-section {
       position: relative;
-      margin-bottom: 20px;
+      margin-bottom: 0;
       overflow: hidden;
+      border-bottom: 1px solid hsl(var(--border));
     }
 
     .featured-container {
@@ -430,14 +431,37 @@
       border-radius: 4px;
     }
 
-    /* Category Filters */
+    /* Games Section with Category Filters */
+    .games-section {
+      background: hsl(var(--background));
+      padding-top: 20px;
+    }
+
+    .section-header {
+      padding: 0 20px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: hsl(var(--foreground));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: hsl(var(--primary));
+    }
+
     .category-filters {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding: 15px 20px;
-      background: hsl(var(--card));
-      border-bottom: 1px solid hsl(var(--border));
+      padding: 0 20px 20px;
       overflow-x: auto;
       scrollbar-width: thin;
       scrollbar-color: hsl(var(--muted)) hsl(var(--background));
@@ -490,30 +514,6 @@
       font-size: 12px;
     }
 
-    /* Games Container */
-    .games-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .games-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px 10px;
-    }
-
-    .games-title {
-      font-weight: 600;
-      font-size: 20px;
-    }
-
-    .games-count {
-      font-size: 14px;
-      color: hsl(var(--muted-foreground));
-    }
-
     .games-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -523,7 +523,6 @@
       overflow-y: auto;
       scrollbar-width: thin;
       scrollbar-color: hsl(var(--muted)) hsl(var(--background));
-      flex: 1;
     }
 
     .games-container::-webkit-scrollbar {
@@ -902,6 +901,18 @@
       font-size: 14px;
     }
 
+    .compact-mode .section-header {
+      padding: 0 16px 12px;
+    }
+
+    .compact-mode .section-title {
+      font-size: 20px;
+    }
+
+    .compact-mode .category-filters {
+      padding: 0 16px 16px;
+    }
+
     .compact-mode .games-container {
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 16px;
@@ -967,6 +978,18 @@
       .top-bar h2 {
         font-size: 14px;
       }
+
+      .section-header {
+        padding: 0 16px 12px;
+      }
+
+      .section-title {
+        font-size: 20px;
+      }
+
+      .category-filters {
+        padding: 0 16px 16px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1004,6 +1027,18 @@
 
       .featured-description {
         font-size: 14px;
+      }
+
+      .section-header {
+        padding: 0 12px 12px;
+      }
+
+      .section-title {
+        font-size: 18px;
+      }
+
+      .category-filters {
+        padding: 0 12px 16px;
       }
     }
 
@@ -1153,11 +1188,16 @@
   </div>
 </div>
 
-<div class="category-filters" id="categoryFilters">
-  <!-- Category filters will be dynamically added here -->
-</div>
-
-<div class="games-wrapper">
+<div class="games-section" id="gamesSection">
+  <div class="section-header">
+    <h2 class="section-title">
+      <i class="fas fa-gamepad"></i>
+      <span id="sectionTitleText">All Games</span>
+    </h2>
+  </div>
+  <div class="category-filters" id="categoryFilters">
+    <!-- Category filters will be dynamically added here -->
+  </div>
   <div class="games-container" id="gamesContainer"></div>
 </div>
 
@@ -1491,7 +1531,9 @@
     loadingPercentage: document.getElementById("loadingPercentage"),
     loadingProgress: document.getElementById("loadingProgress"),
     categoryFilters: document.getElementById("categoryFilters"),
-    featuredIndicators: document.getElementById("featuredIndicators")
+    featuredIndicators: document.getElementById("featuredIndicators"),
+    gamesSection: document.getElementById("gamesSection"),
+    sectionTitleText: document.getElementById("sectionTitleText")
   };
 
   // Initialize featured games
@@ -1931,18 +1973,27 @@
       }
     });
     
+    // Update section title
+    elements.sectionTitleText.textContent = "All Games";
+    
     renderGames();
     // Show featured section when viewing all games
     elements.featuredSection.style.display = 'block';
+    elements.gamesSection.style.display = 'block';
   }
 
   // Show favorites
   function showFavorites() {
     state.currentView = "favorites";
     state.visibleGames = 24; // Reset visible games count
+    
+    // Update section title
+    elements.sectionTitleText.textContent = "Favorite Games";
+    
     renderGames();
     // Hide featured section when viewing favorites
     elements.featuredSection.style.display = 'none';
+    elements.gamesSection.style.display = 'block';
   }
 
   // Show random game
