@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Agic - Unblocked Games Hub</title>
+  <title>Google</title>
   <link rel="icon" href="https://www.google.com/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -1630,7 +1630,8 @@
     compactMode: false,
     visibleGames: 24, // Number of games to show initially (reduced for bigger tiles)
     loadedImages: new Set(), // Track loaded images
-    isLoadingMore: false // Track if more games are currently loading
+    isLoadingMore: false, // Track if more games are currently loading
+    hasReachedMax: false // Track if we've reached the maximum number of games
   };
 
   // DOM elements cache
@@ -1743,6 +1744,7 @@
   function filterByCategory(category) {
     state.currentCategory = category;
     state.visibleGames = 24; // Reset visible games count
+    state.hasReachedMax = false; // Reset max reached flag
     
     // Update active filter
     document.querySelectorAll(".category-filter").forEach(filter => {
@@ -1867,6 +1869,7 @@
   function handleSearch() {
     state.searchQuery = elements.searchInput.value.toLowerCase();
     state.visibleGames = 24; // Reset visible games when searching
+    state.hasReachedMax = false; // Reset max reached flag
     renderGames();
   }
 
@@ -1877,8 +1880,8 @@
     const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = window.innerHeight;
     
-    // Check if we're near the bottom of the page
-    if (scrollTop + clientHeight >= scrollHeight - 200 && !state.isLoadingMore) {
+    // Check if we're near the bottom of the page and not already loading or at max
+    if (scrollTop + clientHeight >= scrollHeight - 200 && !state.isLoadingMore && !state.hasReachedMax) {
       loadMoreGames();
     }
   }
@@ -1886,7 +1889,7 @@
   // Load more games for infinite scroll
   function loadMoreGames() {
     // Prevent multiple simultaneous loads
-    if (state.isLoadingMore) return;
+    if (state.isLoadingMore || state.hasReachedMax) return;
     
     state.isLoadingMore = true;
     
@@ -1955,6 +1958,9 @@
   function renderGames() {
     let gamesToShow = [...games]; // Create a copy to avoid modifying original
     
+    // Shuffle games for random order on each render
+    gamesToShow = shuffleArray(gamesToShow);
+    
     // Filter by search query
     if (state.searchQuery) {
       gamesToShow = gamesToShow.filter(game => 
@@ -1976,9 +1982,6 @@
       );
     }
     
-    // Sort games alphabetically
-    gamesToShow.sort((a, b) => a.name.localeCompare(b.name));
-    
     // Clear container
     elements.gamesContainer.innerHTML = "";
     
@@ -1998,6 +2001,11 @@
     
     // Limit visible games for performance
     const gamesToRender = gamesToShow.slice(0, state.visibleGames);
+    
+    // Check if we've reached the maximum number of games
+    if (gamesToRender.length >= gamesToShow.length) {
+      state.hasReachedMax = true;
+    }
     
     gamesToRender.forEach(game => {
       const div = document.createElement("div");
@@ -2062,8 +2070,8 @@
     
     elements.gamesContainer.appendChild(fragment);
     
-    // Show load more indicator if there are more games
-    if (gamesToShow.length > state.visibleGames) {
+    // Show load more indicator if there are more games and we haven't reached max
+    if (gamesToShow.length > state.visibleGames && !state.hasReachedMax) {
       const loadMoreIndicator = document.createElement("div");
       loadMoreIndicator.className = "load-more-indicator";
       loadMoreIndicator.innerHTML = '<div class="load-more-spinner"></div><span>Scroll down to load more games...</span>';
@@ -2106,6 +2114,7 @@
     state.currentView = "all";
     state.currentCategory = "all";
     state.visibleGames = 24; // Reset visible games count
+    state.hasReachedMax = false; // Reset max reached flag
     
     // Reset category filter
     document.querySelectorAll(".category-filter").forEach(filter => {
@@ -2126,6 +2135,7 @@
   function showFavorites() {
     state.currentView = "favorites";
     state.visibleGames = 24; // Reset visible games count
+    state.hasReachedMax = false; // Reset max reached flag
     renderGames();
     // Hide featured section when viewing favorites
     elements.featuredSection.style.display = 'none';
