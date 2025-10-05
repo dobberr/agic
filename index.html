@@ -1641,21 +1641,19 @@
     discordWelcome: document.getElementById("discordWelcome")
   };
 
-  // Initialize featured games
-  const featuredGames = [
-    games[4], // Five Nights at Freddy's 4
-    games[23], // Friday Night Funkin'
-    games[40], // Minecraft Classic
-    games[75], // Retro Bowl
-    games[100], // Among Us
-    games[120], // Minecraft 1.8.8
-    games[140], // Madalin Stunt Cars 2
-    games[160], // Friday Night Funkin' Hex
-    games[180], // 1v1 lol
-    games[200]  // Fireboy and Watergirl 1
-  ];
+  // Fisher-Yates shuffle algorithm for randomizing games
+  function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
 
-  let featuredGame = featuredGames[0];
+  // Initialize featured games (will be randomized)
+  let featuredGames = [];
+  let featuredGame;
   let featuredInterval;
   let searchTimeout;
 
@@ -1751,6 +1749,13 @@
 
   // Initialize page
   function initPage() {
+    // Shuffle games array for random order
+    const shuffledGames = shuffleArray(games);
+    
+    // Select random featured games from shuffled array
+    featuredGames = shuffledGames.slice(0, 10);
+    featuredGame = featuredGames[0];
+    
     // Show loading screen
     elements.loadingScreen.style.display = 'flex';
     
@@ -1924,11 +1929,11 @@
 
   // Render games with virtual scrolling
   function renderGames() {
-    let gamesToShow = games;
+    let gamesToShow = [...games]; // Create a copy to avoid modifying original
     
     // Filter by search query
     if (state.searchQuery) {
-      gamesToShow = games.filter(game => 
+      gamesToShow = gamesToShow.filter(game => 
         game.name.toLowerCase().includes(state.searchQuery)
       );
     }
