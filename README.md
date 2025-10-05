@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
-  <strong>203 Games - Version 1.0.1</strong><br />
+  <strong>203 Games - Version 1.0.2</strong><br />
   Fast, reliable, and unblocked as always.
 </p>
 
