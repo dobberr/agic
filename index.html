@@ -149,7 +149,7 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.8);
       z-index: 2000;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(5px);
@@ -1610,8 +1610,7 @@
     compactMode: false,
     visibleGames: 24, // Number of games to show initially (reduced for bigger tiles)
     loadedImages: new Set(), // Track loaded images
-    isLoadingMore: false, // Track if more games are currently loading
-    isFirstVisit: !localStorage.getItem("agic_visited") // Track if it's the first visit
+    isLoadingMore: false // Track if more games are currently loading
   };
 
   // DOM elements cache
@@ -1798,8 +1797,9 @@
       elements.loadingScreen.style.display = "none";
       document.getElementById("main-content").style.display = "block";
       
-      // Show Discord welcome modal on first visit
-      if (state.isFirstVisit) {
+      // Check if it's the first visit and show Discord welcome modal
+      const hasVisited = localStorage.getItem("agic_visited");
+      if (!hasVisited) {
         setTimeout(() => {
           elements.discordWelcome.style.display = "flex";
           localStorage.setItem("agic_visited", "true");
