@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Agic - Unblocked Games</title>
-  <link rel="icon" href="Images/AgicLogoNoBg.png" type="image/png" />
+  <title>Google</title>
+  <link rel="icon" href="https://www.google.com/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* shadcn/ui Purple Dark Theme */
@@ -143,6 +143,106 @@
       to { opacity: 1; }
     }
 
+    /* Discord Welcome Modal */
+    .discord-welcome {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .discord-welcome-content {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) - 2px);
+      padding: 24px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      text-align: center;
+    }
+
+    .discord-welcome-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .discord-welcome-header i {
+      color: #5865F2;
+      font-size: 32px;
+    }
+
+    .discord-welcome-header h3 {
+      font-size: 24px;
+      font-weight: 600;
+      color: hsl(var(--foreground));
+    }
+
+    .discord-welcome-body {
+      margin-bottom: 24px;
+      color: hsl(var(--foreground));
+      line-height: 1.5;
+    }
+
+    .discord-welcome-note {
+      background: hsl(var(--muted));
+      padding: 12px;
+      border-radius: calc(var(--radius) - 2px);
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .discord-welcome-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .discord-welcome-button {
+      background: #5865F2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: calc(var(--radius) - 2px);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .discord-welcome-button:hover {
+      background: #4752C4;
+      transform: translateY(-2px);
+    }
+
+    .discord-welcome-close {
+      background: hsl(var(--secondary));
+      color: hsl(var(--secondary-foreground));
+      border: 1px solid hsl(var(--border));
+      padding: 12px 24px;
+      border-radius: calc(var(--radius) - 2px);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .discord-welcome-close:hover {
+      background: hsl(var(--accent));
+      transform: translateY(-2px);
+    }
+
     /* Random Game Button */
     .random-button {
       position: fixed;
@@ -257,6 +357,15 @@
     .nav-buttons button:hover {
       background: hsl(var(--accent));
       transform: translateY(-1px);
+    }
+
+    .discord-btn {
+      background: #5865F2;
+      color: white;
+    }
+
+    .discord-btn:hover {
+      background: #4752C4;
     }
 
     .theme-toggle {
@@ -1104,6 +1213,9 @@
     <button onclick="showFavorites()" aria-label="Favorites">
       <i class="fas fa-star"></i> Favorites
     </button>
+    <button class="discord-btn" onclick="openDiscord()" aria-label="Join Discord">
+      <i class="fab fa-discord"></i> Discord
+    </button>
     <button onclick="showShortcuts()" aria-label="Keyboard Shortcuts">
       <i class="fas fa-keyboard"></i>
     </button>
@@ -1129,11 +1241,35 @@
   <div class="mobile-menu-item" onclick="showFavorites(); toggleMobileMenu();">
     <i class="fas fa-star"></i> Favorites
   </div>
+  <div class="mobile-menu-item" onclick="openDiscord(); toggleMobileMenu();">
+    <i class="fab fa-discord"></i> Discord
+  </div>
   <div class="mobile-menu-item" onclick="showRandomGame(); toggleMobileMenu();">
     <i class="fas fa-random"></i> Random Game
   </div>
   <div class="mobile-menu-item" onclick="toggleTheme(); toggleMobileMenu();">
     <i class="fas fa-moon" id="mobileThemeIcon"></i> Toggle Theme
+  </div>
+</div>
+
+<div class="discord-welcome" id="discordWelcome">
+  <div class="discord-welcome-content">
+    <div class="discord-welcome-header">
+      <i class="fab fa-discord"></i>
+      <h3>Join Our Discord Community!</h3>
+    </div>
+    <div class="discord-welcome-body">
+      <p>Connect with other gamers, share your high scores, and get updates on new games!</p>
+    </div>
+    <div class="discord-welcome-note">
+      <i class="fas fa-info-circle"></i> Note: Discord may be blocked on some school networks. Consider joining from home.
+    </div>
+    <div class="discord-welcome-buttons">
+      <button class="discord-welcome-button" onclick="openDiscord()">
+        <i class="fab fa-discord"></i> Join Discord
+      </button>
+      <button class="discord-welcome-close" onclick="closeDiscordWelcome()">Maybe Later</button>
+    </div>
   </div>
 </div>
 
@@ -1474,7 +1610,8 @@
     compactMode: false,
     visibleGames: 24, // Number of games to show initially (reduced for bigger tiles)
     loadedImages: new Set(), // Track loaded images
-    isLoadingMore: false // Track if more games are currently loading
+    isLoadingMore: false, // Track if more games are currently loading
+    isFirstVisit: !localStorage.getItem("agic_visited") // Track if it's the first visit
   };
 
   // DOM elements cache
@@ -1501,7 +1638,8 @@
     loadingProgress: document.getElementById("loadingProgress"),
     categoryFilters: document.getElementById("categoryFilters"),
     featuredIndicators: document.getElementById("featuredIndicators"),
-    gamesSection: document.getElementById("gamesSection")
+    gamesSection: document.getElementById("gamesSection"),
+    discordWelcome: document.getElementById("discordWelcome")
   };
 
   // Initialize featured games
@@ -1659,6 +1797,14 @@
       // Hide loading screen
       elements.loadingScreen.style.display = "none";
       document.getElementById("main-content").style.display = "block";
+      
+      // Show Discord welcome modal on first visit
+      if (state.isFirstVisit) {
+        setTimeout(() => {
+          elements.discordWelcome.style.display = "flex";
+          localStorage.setItem("agic_visited", "true");
+        }, 1000);
+      }
     }, 2000);
   }
 
@@ -2201,10 +2347,28 @@
     elements.shortcutsModal.style.display = 'none';
   }
 
+  // Discord functions
+  function openDiscord() {
+    // Replace with your actual Discord server URL
+    window.open('https://discord.gg/your-discord-server', '_blank');
+    closeDiscordWelcome();
+  }
+
+  function closeDiscordWelcome() {
+    elements.discordWelcome.style.display = 'none';
+  }
+
   // Close shortcuts modal when clicking outside
   elements.shortcutsModal.addEventListener('click', (e) => {
     if (e.target === elements.shortcutsModal) {
       closeShortcuts();
+    }
+  });
+
+  // Close Discord welcome modal when clicking outside
+  elements.discordWelcome.addEventListener('click', (e) => {
+    if (e.target === elements.discordWelcome) {
+      closeDiscordWelcome();
     }
   });
 
